@@ -278,7 +278,7 @@ fn build_table(
                 .iter()
                 .map(|row| {
                     row.get(col_idx)
-                        .map(|cell| cell.lines().map(|line| line.chars.count()).max().unwrap_or(0))
+                        .map(|cell| cell.lines().map(|line| line.chars().count()).max().unwrap_or(0))
                         .unwrap_or(0)
                 })
                 .max()
