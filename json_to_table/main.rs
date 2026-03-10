@@ -7,16 +7,52 @@ fn val_to_string(val: &Value) -> String {
         Value::Number(num_val) => num_val.to_string(),
         Value::Bool(bool_val) => bool_val.to_string(),
         Value::Null => "".to_string(),
-        Value::Object(map_val) => {
-            let pairs: Vec<String> = map_val
-                .iter()
-                .map(|(key, inner_val)| format!("{}:{}", key, val_to_string(inner_val)))
-                .collect();
-            pairs.join(" | ")
-        }
         Value::Array(arr_val) => {
-            let items: Vec<String> = arr_val.iter().map(|inner_val| val_to_string(inner_val)).collect();
+            let items: Vec<String> = 
+                arr_val.iter().map(|inner_val| val_to_string(inner_val)).collect();
             items.join(", ")
+        }
+        Value::Object(map_val) => {
+            let sub_keys: Vec<&String> = map_val.keys().collect();
+            let sub_vals: Vec<String> = map_val
+                .values()
+                .map(|inner_val| val_to_string(inner_val))
+                .collect();
+
+            let sub_widths: Vec<usize> = sub_keys
+                .iter()
+                .enumerate()
+                .map(|(col_idx, key)| {
+                    std::cmp::max(
+                        key.len(),
+                        sub_vals.get(col_idx).map(|val| val.len()).unwrap_or(0),
+                    )
+                })
+                .collect();
+
+            let header_cells: Vec<String> = sub_keys
+                .iter()
+                .enumerate()
+                .map(|(col_idx, key)| pad_right(key, sub_widths[col_idx]))
+                .collect();
+
+            let separator_cells: Vec<String> = sub_widths
+                .iter()
+                .map(|width| "-".repeat(*width))
+                .collect();
+
+            let val_cells: Vec<String> = sub_vals
+                .iter()
+                .enumerate()
+                .map(|(col_idx, cell)| pad_right(cell, sub_widths[col_idx]))
+                .collect();
+
+            format!(
+                "{}\n{}\n{}",
+                header_cells.join("  "),
+                separator_cells.join("  "),
+                val_cells.join("  ")
+            )
         }
     }
 }
@@ -74,7 +110,11 @@ fn find_header_object(root: &Value, table_keys: &[String]) -> Option<BTreeMap<St
                         if all_strings {
                             let result: BTreeMap<String, String> = candidate_map
                                 .iter()
-                                .map(|(key, val)| (key.clone(), val.as_str().unwrap_or("").to_string()))
+                                .map(
+                                    |(key, val)| (
+                                        key.clone(), val.as_str().unwrap_or("").to_string()
+                                    )
+                                )
                                 .collect();
                             return Some(result);
                         }
@@ -102,91 +142,65 @@ fn pad_right(content: &str, width: usize) -> String {
     format!("{}{}", content, " ".repeat(padding))
 }
 
-fn build_table(rows: &[Value]) -> Result<String, String> {
-    if rows.is_empty() {
-        return Err("No rows found".to_string());
-    }
-
-    let first_obj = rows[0]
-        .as_object()
-        .ok_or("First row is not an object")?;
-
-    let columns: Vec<String> = first_obj.keys().cloned().collect();
-
-    let formatted_rows: Vec<Vec<String>> = rows
-        .iter()
-        .map(|row| {
-            columns
+fn append_rows(lines: &mut Vec<String>, formatted_rows: &[Vec<String>], column_widths: &[usize]) {
+    for row in formatted_rows {
+        let has_subtable = row.iter().any(|cell| cell.contains('\n'));
+        if !has_subtable {
+            let padded_cells: Vec<String> = row
                 .iter()
-                .map(|col| {
-                    let cell_val = row.get(col).unwrap_or(&Value::Null);
-                    val_to_string(cell_val)
-                })
-                .collect()
-        })
-        .collect();
-
-    let column_widths: Vec<usize> = columns
-        .iter()
-        .enumerate()
-        .map(|(col_idx, header)| {
-            let max_cell = formatted_rows
+                .enumerate()
+                .map(|(col_idx, cell)| pad_right(cell, column_widths[col_idx]))
+                .collect();
+            lines.push(format!("| {} |", padded_cells.join(" | ")));
+        } else {
+            let max_sublines = row
                 .iter()
-                .map(|row| row.get(col_idx).map(|cell| cell.len()).unwrap_or(0))
+                .map(|cell| cell.lines().count())
                 .max()
-                .unwrap_or(0);
-            std::cmp::max(header.len(), max_cell)
-        })
-        .collect();
+                .unwrap_or(1);
 
-    let mut lines: Vec<String> = Vec::new();
+            let split_cells: Vec<Vec<String>> = row
+                .iter()
+                .map(|cell| cell.lines().map(|line| line.to_string()).collect())
+                .collect();
 
-    let header_cells: Vec<String> = columns
-        .iter()
-        .enumerate()
-        .map(|(col_idx, header)| pad_right(header, column_widths[col_idx]))
-        .collect();
-    lines.push(format!("| {} |", header_cells.join(" | ")));
-
-    let separator_segments: Vec<String> = column_widths
-        .iter()
-        .map(|width| "-".repeat(*width))
-        .collect();
-    lines.push(format!("|-{}-|", separator_segments.join("-|-")));
-
-    for row in &formatted_rows {
-        let padded_cells: Vec<String> = row
-            .iter()
-            .enumerate()
-            .map(|(col_idx, cell)| pad_right(cell, column_widths[col_idx]))
-            .collect();
-        lines.push(format!("| {} |", padded_cells.join(" | ")));
+            for line_idx in 0..max_sublines {
+                let padded_cells: Vec<String> = split_cells
+                    .iter()
+                    .enumerate()
+                    .map(|(col_idx, cell_lines)| {
+                        let content = cell_lines
+                            .get(line_idx)
+                            .map(|line| line.as_str())
+                            .unwrap_or("");
+                        pad_right(content, column_widths[col_idx])
+                    })
+                    .collect();
+                lines.push(format!("| {} |", padded_cells.join(" | ")));
+            }
+        }
     }
-
-    Ok(lines.join("\n"))
 }
 
-fn build_table_with_header_descriptions(
+fn build_table(
     rows: &[Value],
-    header_map: &BTreeMap<String, String>,
+    header_map: Option<&BTreeMap<String, String>>,
 ) -> Result<String, String> {
     if rows.is_empty() {
         return Err("No rows found".to_string());
     }
 
-    let first_obj = rows[0]
-        .as_object()
-        .ok_or("First row is not an object")?;
-
+    let first_obj = rows[0].as_object().ok_or("First row is not an object")?;
     let columns: Vec<String> = first_obj.keys().cloned().collect();
 
     let display_headers: Vec<String> = columns
         .iter()
         .map(|col| {
-            header_map
-                .get(col)
-                .cloned()
-                .unwrap_or_else(|| col.clone())
+            if let Some(map) = header_map {
+                map.get(col).cloned().unwrap_or_else(|| col.clone())
+            } else {
+                col.clone()
+            }
         })
         .collect();
 
@@ -209,7 +223,11 @@ fn build_table_with_header_descriptions(
         .map(|(col_idx, header)| {
             let max_cell = formatted_rows
                 .iter()
-                .map(|row| row.get(col_idx).map(|cell| cell.len()).unwrap_or(0))
+                .map(|row| {
+                    row.get(col_idx)
+                        .map(|cell| cell.lines().map(|line| line.len()).max().unwrap_or(0))
+                        .unwrap_or(0)
+                })
                 .max()
                 .unwrap_or(0);
             std::cmp::max(header.len(), max_cell)
@@ -231,14 +249,7 @@ fn build_table_with_header_descriptions(
         .collect();
     lines.push(format!("|-{}-|", separator_segments.join("-|-")));
 
-    for row in &formatted_rows {
-        let padded_cells: Vec<String> = row
-            .iter()
-            .enumerate()
-            .map(|(col_idx, cell)| pad_right(cell, column_widths[col_idx]))
-            .collect();
-        lines.push(format!("| {} |", padded_cells.join(" | ")));
-    }
+    append_rows(&mut lines, &formatted_rows, &column_widths);
 
     Ok(lines.join("\n"))
 }
@@ -255,11 +266,8 @@ fn run(input: &str) -> Result<String, String> {
         .ok_or("First row is not an object")?;
     let table_keys: Vec<String> = first_obj.keys().cloned().collect();
 
-    if let Some(header_map) = find_header_object(&parsed, &table_keys) {
-        build_table_with_header_descriptions(&table_rows, &header_map)
-    } else {
-        build_table(&table_rows)
-    }
+    let header_map = find_header_object(&parsed, &table_keys);
+    build_table(&table_rows, header_map.as_ref())
 }
 
 fn main() {

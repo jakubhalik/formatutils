@@ -1,4 +1,301 @@
-what in the hell are u still doing, u r actually thinking about the values in the data I sent u and making funcs based on that, nnononononono NO!!!! all I want is a util that will read WHATEVER json and format its values into a table, as in whatever would be the first, remove all the scientific number things man, u will not parse any values, u will just use those from the jsons, this is to be super dynamic to just see which array has the most objects in it and make those the table, than find above it an object that has the same keys as the objects to be the table for that one to be the header, so basically if used as `jsontotable file.json` and the file.json was {
+use serde_json::Value;
+use std::collections::BTreeMap;
+
+fn val_to_string(val: &Value) -> String {
+    match val {
+        Value::String(string_val) => string_val.clone(),
+        Value::Number(num_val) => num_val.to_string(),
+        Value::Bool(bool_val) => bool_val.to_string(),
+        Value::Null => "".to_string(),
+        Value::Array(arr_val) => {
+            let items: Vec<String> = 
+                arr_val.iter().map(|inner_val| val_to_string(inner_val)).collect();
+            items.join(", ")
+        }
+        Value::Object(map_val) => {
+            let sub_keys: Vec<&String> = map_val.keys().collect();
+            let sub_vals: Vec<String> = map_val
+                .values()
+                .map(|inner_val| val_to_string(inner_val))
+                .collect();
+
+            let sub_widths: Vec<usize> = sub_keys
+                .iter()
+                .enumerate()
+                .map(|(col_idx, key)| {
+                    std::cmp::max(
+                        key.len(),
+                        sub_vals.get(col_idx).map(|val| val.len()).unwrap_or(0),
+                    )
+                })
+                .collect();
+
+            let header_cells: Vec<String> = sub_keys
+                .iter()
+                .enumerate()
+                .map(|(col_idx, key)| pad_right(key, sub_widths[col_idx]))
+                .collect();
+
+            let separator_cells: Vec<String> = sub_widths
+                .iter()
+                .map(|width| "-".repeat(*width))
+                .collect();
+
+            let val_cells: Vec<String> = sub_vals
+                .iter()
+                .enumerate()
+                .map(|(col_idx, cell)| pad_right(cell, sub_widths[col_idx]))
+                .collect();
+
+            format!(
+                "| {} |\n| {} |\n| {} |",
+                header_cells.join(" | "),
+                separator_cells.join(" | "),
+                val_cells.join(" | ")
+            )
+        }
+    }
+}
+
+fn find_largest_object_array(val: &Value) -> Option<Vec<Value>> {
+    let mut best: Option<Vec<Value>> = None;
+
+    match val {
+        Value::Array(arr_val) => {
+            let all_objects = arr_val.iter().all(|item| item.is_object());
+            if all_objects && !arr_val.is_empty() {
+                let current_len = arr_val.len();
+                let is_better = best.as_ref().map_or(true, |existing| current_len > existing.len());
+                if is_better {
+                    best = Some(arr_val.clone());
+                }
+            }
+            for item in arr_val {
+                if let Some(found) = find_largest_object_array(item) {
+                    let is_better = best.as_ref().map_or(true, |existing| found.len() > existing.len());
+                    if is_better {
+                        best = Some(found);
+                    }
+                }
+            }
+        }
+        Value::Object(map_val) => {
+            for (_key, inner_val) in map_val {
+                if let Some(found) = find_largest_object_array(inner_val) {
+                    let is_better = best.as_ref().map_or(true, |existing| found.len() > existing.len());
+                    if is_better {
+                        best = Some(found);
+                    }
+                }
+            }
+        }
+        _ => {}
+    }
+
+    best
+}
+
+fn find_header_object(root: &Value, table_keys: &[String]) -> Option<BTreeMap<String, String>> {
+    match root {
+        Value::Object(map_val) => {
+            for (_key, inner_val) in map_val {
+                if let Value::Object(candidate_map) = inner_val {
+                    let candidate_keys: Vec<String> = candidate_map.keys().cloned().collect();
+                    let mut sorted_candidate = candidate_keys.clone();
+                    sorted_candidate.sort();
+                    let mut sorted_table = table_keys.to_vec();
+                    sorted_table.sort();
+                    if sorted_candidate == sorted_table {
+                        let all_strings = candidate_map.values().all(|val| val.is_string());
+                        if all_strings {
+                            let result: BTreeMap<String, String> = candidate_map
+                                .iter()
+                                .map(
+                                    |(key, val)| (
+                                        key.clone(), val.as_str().unwrap_or("").to_string()
+                                    )
+                                )
+                                .collect();
+                            return Some(result);
+                        }
+                    }
+                }
+                if let Some(found) = find_header_object(inner_val, table_keys) {
+                    return Some(found);
+                }
+            }
+        }
+        Value::Array(arr_val) => {
+            for item in arr_val {
+                if let Some(found) = find_header_object(item, table_keys) {
+                    return Some(found);
+                }
+            }
+        }
+        _ => {}
+    }
+    None
+}
+
+fn pad_right(content: &str, width: usize) -> String {
+    let padding = width.saturating_sub(content.len());
+    format!("{}{}", content, " ".repeat(padding))
+}
+
+fn append_rows(lines: &mut Vec<String>, formatted_rows: &[Vec<String>], column_widths: &[usize]) {
+    for row in formatted_rows {
+        let has_subtable = row.iter().any(|cell| cell.contains('\n'));
+        if !has_subtable {
+            let padded_cells: Vec<String> = row
+                .iter()
+                .enumerate()
+                .map(|(col_idx, cell)| pad_right(cell, column_widths[col_idx]))
+                .collect();
+            lines.push(format!("| {} |", padded_cells.join(" | ")));
+        } else {
+            let max_sublines = row
+                .iter()
+                .map(|cell| cell.lines().count())
+                .max()
+                .unwrap_or(1);
+
+            let split_cells: Vec<Vec<String>> = row
+                .iter()
+                .map(|cell| cell.lines().map(|line| line.to_string()).collect())
+                .collect();
+
+            for line_idx in 0..max_sublines {
+                let padded_cells: Vec<String> = split_cells
+                    .iter()
+                    .enumerate()
+                    .map(|(col_idx, cell_lines)| {
+                        let content = cell_lines
+                            .get(line_idx)
+                            .map(|line| line.as_str())
+                            .unwrap_or("");
+                        pad_right(content, column_widths[col_idx])
+                    })
+                    .collect();
+                lines.push(format!("| {} |", padded_cells.join(" | ")));
+            }
+        }
+    }
+}
+
+fn build_table(
+    rows: &[Value],
+    header_map: Option<&BTreeMap<String, String>>,
+) -> Result<String, String> {
+    if rows.is_empty() {
+        return Err("No rows found".to_string());
+    }
+
+    let first_obj = rows[0].as_object().ok_or("First row is not an object")?;
+    let columns: Vec<String> = first_obj.keys().cloned().collect();
+
+    let display_headers: Vec<String> = columns
+        .iter()
+        .map(|col| {
+            if let Some(map) = header_map {
+                map.get(col).cloned().unwrap_or_else(|| col.clone())
+            } else {
+                col.clone()
+            }
+        })
+        .collect();
+
+    let formatted_rows: Vec<Vec<String>> = rows
+        .iter()
+        .map(|row| {
+            columns
+                .iter()
+                .map(|col| {
+                    let cell_val = row.get(col).unwrap_or(&Value::Null);
+                    val_to_string(cell_val)
+                })
+                .collect()
+        })
+        .collect();
+
+    let column_widths: Vec<usize> = display_headers
+        .iter()
+        .enumerate()
+        .map(|(col_idx, header)| {
+            let max_cell = formatted_rows
+                .iter()
+                .map(|row| {
+                    row.get(col_idx)
+                        .map(|cell| cell.lines().map(|line| line.len()).max().unwrap_or(0))
+                        .unwrap_or(0)
+                })
+                .max()
+                .unwrap_or(0);
+            std::cmp::max(header.len(), max_cell)
+        })
+        .collect();
+
+    let mut lines: Vec<String> = Vec::new();
+
+    let header_cells: Vec<String> = display_headers
+        .iter()
+        .enumerate()
+        .map(|(col_idx, header)| pad_right(header, column_widths[col_idx]))
+        .collect();
+    lines.push(format!("| {} |", header_cells.join(" | ")));
+
+    let separator_segments: Vec<String> = column_widths
+        .iter()
+        .map(|width| "-".repeat(*width))
+        .collect();
+    lines.push(format!("|-{}-|", separator_segments.join("-|-")));
+
+    append_rows(&mut lines, &formatted_rows, &column_widths);
+
+    Ok(lines.join("\n"))
+}
+
+fn run(input: &str) -> Result<String, String> {
+    let parsed: Value =
+        serde_json::from_str(input).map_err(|err| format!("Invalid JSON: {}", err))?;
+
+    let table_rows =
+        find_largest_object_array(&parsed).ok_or("No array of objects found in JSON")?;
+
+    let first_obj = table_rows[0]
+        .as_object()
+        .ok_or("First row is not an object")?;
+    let table_keys: Vec<String> = first_obj.keys().cloned().collect();
+
+    let header_map = find_header_object(&parsed, &table_keys);
+    build_table(&table_rows, header_map.as_ref())
+}
+
+fn main() {
+    let args: Vec<String> = std::env::args().collect();
+
+    let input = if args.len() > 1 {
+        std::fs::read_to_string(&args[1])
+            .map_err(|err| format!("Failed to read file '{}': {}", &args[1], err))
+    } else {
+        std::io::read_to_string(std::io::stdin())
+            .map_err(|err| format!("Failed to read stdin: {}", err))
+    };
+
+    match input {
+        Ok(content) => match run(&content) {
+            Ok(table) => println!("{}", table),
+            Err(err) => {
+                eprintln!("Error: {}", err);
+                std::process::exit(1);
+            }
+        },
+        Err(err) => {
+            eprintln!("Error: {}", err);
+            std::process::exit(1);
+        }
+    }
+}
+ is not handling the "subtables" properly, the output of {
   "_meta": {
     "description": "Bandwidth/latency reference table: CPU caches through Tor hidden services",
     "notes": [
@@ -231,134 +528,231 @@ what in the hell are u still doing, u r actually thinking about the values in th
         "365d": "3.47×10^17"
       }
     },
- .............. it would make a good plaintext table out of it that looks similar to | Dec | Hex  |  Bin        | Char | Description         |
-|-----|------|-------------|------|---------------------|
-|  0  | 0x00 | 00000000    | NUL  | Null                |
-|  1  | 0x01 | 00000001    | SOH  | Start of Heading    |
-|  2  | 0x02 | 00000010    | STX  | Start of Text       |
-|  3  | 0x03 | 00000011    | ETX  | End of Text         |
-|  4  | 0x04 | 00000100    | EOT  | End of Transmission |
-|  5  | 0x05 | 00000101    | ENQ  | Enquiry             |
-|  6  | 0x06 | 00000110    | ACK  | Acknowledge         |
-|  7  | 0x07 | 00000111    | BEL  | Bell                |
-|  8  | 0x08 | 00001000    | BS   | Backspace           |
-|  9  | 0x09 | 00001001    | TAB  | Horizontal Tab      |
-| 10  | 0x0A | 00001010    | LF   | Line Feed           |
-| 11  | 0x0B | 00001011    | VT   | Vertical Tab        |
-| 12  | 0x0C | 00001100    | FF   | Form Feed           |
-| 13  | 0x0D | 00001101    | CR   | Carriage Return     |
-| 14  | 0x0E | 00001110    | SO   | Shift Out           |
-| 15  | 0x0F | 00001111    | SI   | Shift In            |
-| 16  | 0x10 | 00010000    | DLE  | Data Link Escape    |
-| 17  | 0x11 | 00010001    | DC1  | Device Control 1    |
-| 18  | 0x12 | 00010010    | DC2  | Device Control 2    |
-| 19  | 0x13 | 00010011    | DC3  | Device Control 3    |
-| 20  | 0x14 | 00010100    | DC4  | Device Control 4    |
-| 21  | 0x15 | 00010101    | NAK  | Negative Ack        |
-| 22  | 0x16 | 00010110    | SYN  | Synchronous Idle    |
-| 23  | 0x17 | 00010111    | ETB  | End of Trans. Block |
-| 24  | 0x18 | 00011000    | CAN  | Cancel              |
-| 25  | 0x19 | 00011001    | EM   | End of Medium       |
-| 26  | 0x1A | 00011010    | SUB  | Substitute          |
-| 27  | 0x1B | 00011011    | ESC  | Escape              |
-| 28  | 0x1C | 00011100    | FS   | File Separator      |
-| 29  | 0x1D | 00011101    | GS   | Group Separator     |
-| 30  | 0x1E | 00011110    | RS   | Record Separator    |
-| 31  | 0x1F | 00011111    | US   | Unit Separator      |
-| 32  | 0x20 | 00100000    | ' '  | Space               |
-| 33  | 0x21 | 00100001    |  !   | Exclamation mark    |
-| 34  | 0x22 | 00100010    |  "   | Double quote        |
-| 35  | 0x23 | 00100011    |  #   | Number sign         |
-| 36  | 0x24 | 00100100    |  $   | Dollar sign         |
-| 37  | 0x25 | 00100101    |  %   | Percent sign        |
-| 38  | 0x26 | 00100110    |  &   | Ampersand           |
-| 39  | 0x27 | 00100111    |  '   | Single quote        |
-| 40  | 0x28 | 00101000    |  (   | Left parenthesis    |
-| 41  | 0x29 | 00101001    |  )   | Right parenthesis   |
-| 42  | 0x2A | 00101010    |  *   | Asterisk            |
-| 43  | 0x2B | 00101011    |  +   | Plus                |
-| 44  | 0x2C | 00101100    |  ,   | Comma               |
-| 45  | 0x2D | 00101101    |  -   | Hyphen              |
-| 46  | 0x2E | 00101110    |  .   | Period              |
-| 47  | 0x2F | 00101111    |  /   | Slash               |
-| 48  | 0x30 | 00110000    |  0   | Digit 0             |
-| 49  | 0x31 | 00110001    |  1   | Digit 1             |
-| 50  | 0x32 | 00110010    |  2   | Digit 2             |
-| 51  | 0x33 | 00110011    |  3   | Digit 3             |
-| 52  | 0x34 | 00110100    |  4   | Digit 4             |
-| 53  | 0x35 | 00110101    |  5   | Digit 5             |
-| 54  | 0x36 | 00110110    |  6   | Digit 6             |
-| 55  | 0x37 | 00110111    |  7   | Digit 7             |
-| 56  | 0x38 | 00111000    |  8   | Digit 8             |
-| 57  | 0x39 | 00111001    |  9   | Digit 9             |
-| 58  | 0x3A | 00111010    |  :   | Colon               |
-| 59  | 0x3B | 00111011    |  ;   | Semicolon           |
-| 60  | 0x3C | 00111100    |  <   | Less than           |
-| 61  | 0x3D | 00111101    |  =   | Equals              |
-| 62  | 0x3E | 00111110    |  >   | Greater than        |
-| 63  | 0x3F | 00111111    |  ?   | Question mark       |
-| 64  | 0x40 | 01000000    |  @   | At sign             |
-| 65  | 0x41 | 01000001    |  A   | Uppercase A         |
-| 66  | 0x42 | 01000010    |  B   | Uppercase B         |
-| 67  | 0x43 | 01000011    |  C   | Uppercase C         |
-| 68  | 0x44 | 01000100    |  D   | Uppercase D         |
-| 69  | 0x45 | 01000101    |  E   | Uppercase E         |
-| 70  | 0x46 | 01000110    |  F   | Uppercase F         |
-| 71  | 0x47 | 01000111    |  G   | Uppercase G         |
-| 72  | 0x48 | 01001000    |  H   | Uppercase H         |
-| 73  | 0x49 | 01001001    |  I   | Uppercase I         |
-| 74  | 0x4A | 01001010    |  J   | Uppercase J         |
-| 75  | 0x4B | 01001011    |  K   | Uppercase K         |
-| 76  | 0x4C | 01001100    |  L   | Uppercase L         |
-| 77  | 0x4D | 01001101    |  M   | Uppercase M         |
-| 78  | 0x4E | 01001110    |  N   | Uppercase N         |
-| 79  | 0x4F | 01001111    |  O   | Uppercase O         |
-| 80  | 0x50 | 01010000    |  P   | Uppercase P         |
-| 81  | 0x51 | 01010001    |  Q   | Uppercase Q         |
-| 82  | 0x52 | 01010010    |  R   | Uppercase R         |
-| 83  | 0x53 | 01010011    |  S   | Uppercase S         |
-| 84  | 0x54 | 01010100    |  T   | Uppercase T         |
-| 85  | 0x55 | 01010101    |  U   | Uppercase U         |
-| 86  | 0x56 | 01010110    |  V   | Uppercase V         |
-| 87  | 0x57 | 01010111    |  W   | Uppercase W         |
-| 88  | 0x58 | 01011000    |  X   | Uppercase X         |
-| 89  | 0x59 | 01011001    |  Y   | Uppercase Y         |
-| 90  | 0x5A | 01011010    |  Z   | Uppercase Z         |
-| 91  | 0x5B | 01011011    |  [   | Left bracket        |
-| 92  | 0x5C | 01011100    |  \   | Backslash           |
-| 93  | 0x5D | 01011101    |  ]   | Right bracket       |
-| 94  | 0x5E | 01011110    |  ^   | Caret               |
-| 95  | 0x5F | 01011111    |  _   | Underscore          |
-| 96  | 0x60 | 01100000    |  `   | Grave accent        |
-| 97  | 0x61 | 01100001    |  a   | Lowercase a         |
-| 98  | 0x62 | 01100010    |  b   | Lowercase b         |
-| 99  | 0x63 | 01100011    |  c   | Lowercase c         |
-|100  | 0x64 | 01100100    |  d   | Lowercase d         |
-|101  | 0x65 | 01100101    |  e   | Lowercase e         |
-|102  | 0x66 | 01100110    |  f   | Lowercase f         |
-|103  | 0x67 | 01100111    |  g   | Lowercase g         |
-|104  | 0x68 | 01101000    |  h   | Lowercase h         |
-|105  | 0x69 | 01101001    |  i   | Lowercase i         |
-|106  | 0x6A | 01101010    |  j   | Lowercase j         |
-|107  | 0x6B | 01101011    |  k   | Lowercase k         |
-|108  | 0x6C | 01101100    |  l   | Lowercase l         |
-|109  | 0x6D | 01101101    |  m   | Lowercase m         |
-|110  | 0x6E | 01101110    |  n   | Lowercase n         |
-|111  | 0x6F | 01101111    |  o   | Lowercase o         |
-|112  | 0x70 | 01110000    |  p   | Lowercase p         |
-|113  | 0x71 | 01110001    |  q   | Lowercase q         |
-|114  | 0x72 | 01110010    |  r   | Lowercase r         |
-|115  | 0x73 | 01110011    |  s   | Lowercase s         |
-|116  | 0x74 | 01110100    |  t   | Lowercase t         |
-|117  | 0x75 | 01110101    |  u   | Lowercase u         |
-|118  | 0x76 | 01110110    |  v   | Lowercase v         |
-|119  | 0x77 | 01110111    |  w   | Lowercase w         |
-|120  | 0x78 | 01111000    |  x   | Lowercase x         |
-|121  | 0x79 | 01111001    |  y   | Lowercase y         |
-|122  | 0x7A | 01111010    |  z   | Lowercase z         |
-|123  | 0x7B | 01111011    |  {   | Left brace          |
-|124  | 0x7C | 01111100    |  \|  | Vertical bar        |
-|125  | 0x7D | 01111101    |  }   | Right brace         |
-|126  | 0x7E | 01111110    |  ~   | Tilde               |
-|127  | 0x7F | 01111111    | DEL  | Delete              |
- , but so it does that no matter if the object name is fields, and arr entries, that part should be irrelevant for the dynamics of it , as i told u to do it based on the analysis as i said, not based on specific names, make it just ignore and throw out everything else out of the file, also make it accept stdin too, so I can pipe some json input to it, but if it is not json format make it return an error
+    {
+      "id": 9,
+      "section": "CPU CACHE / RAM",
+      "channel": "DDR5 random 4K read",
+      "seq_read": "14 GB/s",
+      "seq_write": "14 GB/s",
+      "throughput_mbs": 14000,
+      "latency": "~80 ns",
+      "typical_pkt_size": "4,096 B (page)",
+      "handshake_crypto": "No hs.",
+      "category": "RAM",
+      "notes": "",
+      "data_transferred_bytes": {
+        "10s": "1.40×10^11",
+        "1min": "8.40×10^11",
+        "5min": "4.20×10^12",
+        "15min": "1.26×10^13",
+        "1hr": "5.04×10^13",
+        "6hr": "3.02×10^14",
+        "24hr": "1.21×10^15",
+        "7d": "8.47×10^15",
+        "30d": "3.63×10^16",
+        "365d": "4.42×10^17"
+      }
+    },
+    {
+      "id": 10,
+      "section": "NVMe SSD",
+      "channel": "NVMe PCIe 4.0 SSD seq read (980 Pro)",
+      "seq_read": "7 GB/s",
+      "seq_write": null,
+      "throughput_mbs": 7000,
+      "latency": "~12 µs",
+      "typical_pkt_size": "512 B–4 KB (NVMe cmd)",
+      "handshake_crypto": "No hs. NVMe queue cmd ~2 µs.",
+      "category": "SSD-NVMe",
+      "notes": "QD32+ saturates controller",
+      "data_transferred_bytes": {
+        "10s": "7.00×10^10",
+        "1min": "4.20×10^11",
+        "5min": "2.10×10^12",
+        "15min": "6.30×10^12",
+        "1hr": "2.52×10^13",
+        "6hr": "1.51×10^14",
+        "24hr": "6.05×10^14",
+        "7d": "4.23×10^15",
+        "30d": "1.81×10^16",
+        "365d": "2.21×10^17"
+      }
+    },
+    {
+      "id": 11,
+      "section": "NVMe SSD",
+      "channel": "NVMe PCIe 4.0 SSD seq write (980 Pro)",
+      "seq_read": null,
+      "seq_write": "5 GB/s",
+      "throughput_mbs": 5000,
+      "latency": "~12 µs",
+      "typical_pkt_size": "512 B–4 KB",
+      "handshake_crypto": "No hs.",
+      "category": "SSD-NVMe",
+      "notes": "",
+      "data_transferred_bytes": {
+        "10s": "5.00×10^10",
+        "1min": "3.00×10^11",
+        "5min": "1.50×10^12",
+        "15min": "4.50×10^12",
+        "1hr": "1.80×10^13",
+        "6hr": "1.08×10^14",
+        "24hr": "4.32×10^14",
+        "7d": "3.02×10^15",
+        "30d": "1.30×10^16",
+        "365d": "1.58×10^17"
+      }
+    },
+    {
+      "id": 12,
+      "section": "NVMe SSD",
+      "channel": "NVMe PCIe 3.0 SSD seq read (970 EVO)",
+      "seq_read": "3.5 GB/s",
+      "seq_write": null,
+      "throughput_mbs": 3500,
+      "latency": "~20 µs",
+      "typical_pkt_size": "512 B–4 KB",
+      "handshake_crypto": "No hs.",
+      "category": "SSD-NVMe",
+      "notes": "",
+      "data_transferred_bytes": {
+        "10s": "3.50×10^10",
+        "1min": "2.10×10^11",
+        "5min": "1.05×10^12",
+        "15min": "3.15×10^12",
+        "1hr": "1.26×10^13",
+        "6hr": "7.56×10^13",
+        "24hr": "3.02×10^14",
+        "7d": "2.12×10^15",
+        "30d": "9.07×10^15",
+        "365d": "1.10×10^17"
+      }
+    },
+    {
+      "id": 13,
+      "section": "NVMe SSD",
+      "channel": "NVMe PCIe 3.0 SSD seq write (970 EVO)",
+      "seq_read": null,
+      "seq_write": "2.5 GB/s",
+      "throughput_mbs": 2500,
+      "latency": "~20 µs",
+      "typical_pkt_size": "512 B–4 KB",
+      "handshake_crypto": "No hs.",
+      "category": "SSD-NVMe",
+      "notes": "",
+      "data_transferred_bytes": {
+        "10s": "2.50×10^10",
+        "1min": "1.50×10^11",
+        "5min": "7.50×10^11",
+        "15min": "2.25×10^12",
+        "1hr": "9.00×10^12",
+        "6hr": "5.40×10^13",
+        "24hr": "2.16×10^14",
+        "7d": "1.51×10^15",
+        "30d": "6.48×10^15",
+        "365d": "7.88×10^16"
+      }
+    },
+    {
+      "id": 14,
+      "section": "NVMe SSD",
+      "channel": "NVMe PCIe 4.0 random 4K read",
+      "seq_read": "90 MB/s",
+      "seq_write": null,
+      "throughput_mbs": 90,
+      "latency": "~12 µs",
+      "typical_pkt_size": "4,096 B",
+      "handshake_crypto": "No hs. ~1M IOPS.",
+      "category": "SSD-NVMe",
+      "notes": "",
+      "data_transferred_bytes": {
+        "10s": "9.00×10^8",
+        "1min": "5.40×10^9",
+        "5min": "2.70×10^10",
+        "15min": "8.10×10^10",
+        "1hr": "3.24×10^11",
+        "6hr": "1.94×10^12",
+        "24hr": "7.78×10^12",
+        "7d": "5.44×10^13",
+        "30d": "2.33×10^14",
+        "365d": "2.84×10^15"
+      }
+    },
+    {
+      "id": 15,
+      "section": "NVMe SSD",
+      "channel": "NVMe PCIe 4.0 random 4K write",
+      "seq_read": null,
+      "seq_write": "70 MB/s",
+      "throughput_mbs": 70,
+      "latency": "~12 µs",
+      "typical_pkt_size": "4,096 B",
+      "handshake_crypto": "No hs.",
+      "category": "SSD-NVMe",
+      "notes": "",
+      "data_transferred_bytes": {
+        "10s": "7.00×10^8",
+        "1min": "4.20×10^9",
+        "5min": "2.10×10^10",
+        "15min": "6.30×10^10",
+ is | Short category tag | Channel or method name                 | Bytes transferred at sustained throughput over each interval | Handshake and per-byte crypto cost description | Row number  | Typical latency or RTT (human string) | Additional notes | Section heading this entry belongs to | Sequential read throughput (human string, null if N/A) | Sequential write throughput (human string, null if N/A) | Throughput in MB/s used for time calculations | Typical packet/block/cell size |             |     |                                                   |     |           |                                                             |                                          |            |            |         |                        |
+| ------------------ | -------------------------------------- | ------------------------------------------------------------ | ---------------------------------------------- | ----------- | ------------------------------------- | ---------------- | ------------------------------------- | ------------------------------------------------------ | ------------------------------------------------------- | --------------------------------------------- | ------------------------------ | ----------- | --- | ------------------------------------------------- | --- | --------- | ----------------------------------------------------------- | ---------------------------------------- | ---------- | ---------- | ------- | ---------------------- |
+| CPU                | CPU L1 Cache read                      |                                                              | 10s                                            | 15min       | 1hr                                   | 1min             | 24hr                                  | 30d                                                    | 365d                                                    | 5min                                          | 6hr                            | 7d          |     | No hs. Register/L1 SRAM direct.                   | 1   | ~1 ns     | Cache line granularity; BW limited by CPU freq              | CPU CACHE / RAM                          | 1,000 GB/s | 1,000 GB/s | 1000000 | 64 B (cache line)      |
+|                    |                                        |                                                              | -----------                                    | ----------- | -----------                           | -----------      | -----------                           | -----------                                            | -----------                                             | -----------                                   | -----------                    | ----------- |     |                                                   |     |           |                                                             |                                          |            |            |         |                        |
+|                    |                                        |                                                              | 1.00×10^13                                     | 9.00×10^14  | 3.60×10^15                            | 6.00×10^13       | 8.64×10^16                            | 2.59×10^18                                             | 3.15×10^19                                              | 3.00×10^14                                    | 2.16×10^16                     | 6.05×10^17  |     |                                                   |     |           |                                                             |                                          |            |            |         |                        |
+| CPU                | CPU L2 Cache read                      |                                                              | 10s                                            | 15min       | 1hr                                   | 1min             | 24hr                                  | 30d                                                    | 365d                                                    | 5min                                          | 6hr                            | 7d          |     | No hs.                                            | 2   | ~4 ns     |                                                             | CPU CACHE / RAM                          | 500 GB/s   | 500 GB/s   | 500000  | 64 B (cache line)      |
+|                    |                                        |                                                              | -----------                                    | ----------- | -----------                           | -----------      | -----------                           | -----------                                            | -----------                                             | -----------                                   | -----------                    | ----------- |     |                                                   |     |           |                                                             |                                          |            |            |         |                        |
+|                    |                                        |                                                              | 5.00×10^12                                     | 4.50×10^14  | 1.80×10^15                            | 3.00×10^13       | 4.32×10^16                            | 1.30×10^18                                             | 1.58×10^19                                              | 1.50×10^14                                    | 1.08×10^16                     | 3.02×10^17  |     |                                                   |     |           |                                                             |                                          |            |            |         |                        |
+| CPU                | CPU L3 Cache read                      |                                                              | 10s                                            | 15min       | 1hr                                   | 1min             | 24hr                                  | 30d                                                    | 365d                                                    | 5min                                          | 6hr                            | 7d          |     | No hs.                                            | 3   | ~15 ns    |                                                             | CPU CACHE / RAM                          | 150 GB/s   | 150 GB/s   | 150000  | 64 B (cache line)      |
+|                    |                                        |                                                              | -----------                                    | ----------- | -----------                           | -----------      | -----------                           | -----------                                            | -----------                                             | -----------                                   | -----------                    | ----------- |     |                                                   |     |           |                                                             |                                          |            |            |         |                        |
+|                    |                                        |                                                              | 1.50×10^12                                     | 1.35×10^14  | 5.40×10^14                            | 9.00×10^12       | 1.30×10^16                            | 3.89×10^17                                             | 4.73×10^18                                              | 4.50×10^13                                    | 3.24×10^15                     | 9.07×10^16  |     |                                                   |     |           |                                                             |                                          |            |            |         |                        |
+| RAM                | DDR4-3200 RAM (dual ch) read           |                                                              | 10s                                            | 15min       | 1hr                                   | 1min             | 24hr                                  | 30d                                                    | 365d                                                    | 5min                                          | 6hr                            | 7d          |     | No hs. DRAM row activate ~45 ns.                  | 4   | ~65 ns    |                                                             | CPU CACHE / RAM                          | 48 GB/s    | 48 GB/s    | 48000   | 64 B (cache line)      |
+|                    |                                        |                                                              | -----------                                    | ----------- | -----------                           | -----------      | -----------                           | -----------                                            | -----------                                             | -----------                                   | -----------                    | ----------- |     |                                                   |     |           |                                                             |                                          |            |            |         |                        |
+|                    |                                        |                                                              | 4.80×10^11                                     | 4.32×10^13  | 1.73×10^14                            | 2.88×10^12       | 4.15×10^15                            | 1.24×10^17                                             | 1.51×10^18                                              | 1.44×10^13                                    | 1.04×10^15                     | 2.90×10^16  |     |                                                   |     |           |                                                             |                                          |            |            |         |                        |
+| RAM                | DDR4-3200 RAM (dual ch) write          |                                                              | 10s                                            | 15min       | 1hr                                   | 1min             | 24hr                                  | 30d                                                    | 365d                                                    | 5min                                          | 6hr                            | 7d          |     | No hs.                                            | 5   | ~65 ns    |                                                             | CPU CACHE / RAM                          | 48 GB/s    | 48 GB/s    | 48000   | 64 B (cache line)      |
+|                    |                                        |                                                              | -----------                                    | ----------- | -----------                           | -----------      | -----------                           | -----------                                            | -----------                                             | -----------                                   | -----------                    | ----------- |     |                                                   |     |           |                                                             |                                          |            |            |         |                        |
+|                    |                                        |                                                              | 4.80×10^11                                     | 4.32×10^13  | 1.73×10^14                            | 2.88×10^12       | 4.15×10^15                            | 1.24×10^17                                             | 1.51×10^18                                              | 1.44×10^13                                    | 1.04×10^15                     | 2.90×10^16  |     |                                                   |     |           |                                                             |                                          |            |            |         |                        |
+| RAM                | DDR5-5600 RAM (dual ch) read           |                                                              | 10s                                            | 15min       | 1hr                                   | 1min             | 24hr                                  | 30d                                                    | 365d                                                    | 5min                                          | 6hr                            | 7d          |     | No hs.                                            | 6   | ~80 ns    |                                                             | CPU CACHE / RAM                          | 80 GB/s    | 80 GB/s    | 80000   | 64 B (cache line)      |
+|                    |                                        |                                                              | -----------                                    | ----------- | -----------                           | -----------      | -----------                           | -----------                                            | -----------                                             | -----------                                   | -----------                    | ----------- |     |                                                   |     |           |                                                             |                                          |            |            |         |                        |
+|                    |                                        |                                                              | 8.00×10^11                                     | 7.20×10^13  | 2.88×10^14                            | 4.80×10^12       | 6.91×10^15                            | 2.07×10^17                                             | 2.52×10^18                                              | 2.40×10^13                                    | 1.73×10^15                     | 4.84×10^16  |     |                                                   |     |           |                                                             |                                          |            |            |         |                        |
+| RAM                | DDR5-5600 RAM (dual ch) write          |                                                              | 10s                                            | 15min       | 1hr                                   | 1min             | 24hr                                  | 30d                                                    | 365d                                                    | 5min                                          | 6hr                            | 7d          |     | No hs.                                            | 7   | ~80 ns    |                                                             | CPU CACHE / RAM                          | 80 GB/s    | 80 GB/s    | 80000   | 64 B (cache line)      |
+|                    |                                        |                                                              | -----------                                    | ----------- | -----------                           | -----------      | -----------                           | -----------                                            | -----------                                             | -----------                                   | -----------                    | ----------- |     |                                                   |     |           |                                                             |                                          |            |            |         |                        |
+|                    |                                        |                                                              | 8.00×10^11                                     | 7.20×10^13  | 2.88×10^14                            | 4.80×10^12       | 6.91×10^15                            | 2.07×10^17                                             | 2.52×10^18                                              | 2.40×10^13                                    | 1.73×10^15                     | 4.84×10^16  |     |                                                   |     |           |                                                             |                                          |            |            |         |                        |
+| RAM                | DDR4 random 4K read                    |                                                              | 10s                                            | 15min       | 1hr                                   | 1min             | 24hr                                  | 30d                                                    | 365d                                                    | 5min                                          | 6hr                            | 7d          |     | No hs.                                            | 8   | ~65 ns    | TLB miss adds ~200 ns                                       | CPU CACHE / RAM                          | 11 GB/s    | 11 GB/s    | 11000   | 4,096 B (page)         |
+|                    |                                        |                                                              | -----------                                    | ----------- | -----------                           | -----------      | -----------                           | -----------                                            | -----------                                             | -----------                                   | -----------                    | ----------- |     |                                                   |     |           |                                                             |                                          |            |            |         |                        |
+|                    |                                        |                                                              | 1.10×10^11                                     | 9.90×10^12  | 3.96×10^13                            | 6.60×10^11       | 9.50×10^14                            | 2.85×10^16                                             | 3.47×10^17                                              | 3.30×10^12                                    | 2.38×10^14                     | 6.65×10^15  |     |                                                   |     |           |                                                             |                                          |            |            |         |                        |
+| RAM                | DDR5 random 4K read                    |                                                              | 10s                                            | 15min       | 1hr                                   | 1min             | 24hr                                  | 30d                                                    | 365d                                                    | 5min                                          | 6hr                            | 7d          |     | No hs.                                            | 9   | ~80 ns    |                                                             | CPU CACHE / RAM                          | 14 GB/s    | 14 GB/s    | 14000   | 4,096 B (page)         |
+|                    |                                        |                                                              | -----------                                    | ----------- | -----------                           | -----------      | -----------                           | -----------                                            | -----------                                             | -----------                                   | -----------                    | ----------- |     |                                                   |     |           |                                                             |                                          |            |            |         |                        |
+|                    |                                        |                                                              | 1.40×10^11                                     | 1.26×10^13  | 5.04×10^13                            | 8.40×10^11       | 1.21×10^15                            | 3.63×10^16                                             | 4.42×10^17                                              | 4.20×10^12                                    | 3.02×10^14                     | 8.47×10^15  |     |                                                   |     |           |                                                             |                                          |            |            |         |                        |
+| SSD-NVMe           | NVMe PCIe 4.0 SSD seq read (980 Pro)   |                                                              | 10s                                            | 15min       | 1hr                                   | 1min             | 24hr                                  | 30d                                                    | 365d                                                    | 5min                                          | 6hr                            | 7d          |     | No hs. NVMe queue cmd ~2 µs.                      | 10  | ~12 µs    | QD32+ saturates controller                                  | NVMe SSD                                 | 7 GB/s     |            | 7000    | 512 B–4 KB (NVMe cmd)  |
+|                    |                                        |                                                              | -----------                                    | ----------- | -----------                           | -----------      | -----------                           | -----------                                            | -----------                                             | -----------                                   | -----------                    | ----------- |     |                                                   |     |           |                                                             |                                          |            |            |         |                        |
+|                    |                                        |                                                              | 7.00×10^10                                     | 6.30×10^12  | 2.52×10^13                            | 4.20×10^11       | 6.05×10^14                            | 1.81×10^16                                             | 2.21×10^17                                              | 2.10×10^12                                    | 1.51×10^14                     | 4.23×10^15  |     |                                                   |     |           |                                                             |                                          |            |            |         |                        |
+| SSD-NVMe           | NVMe PCIe 4.0 SSD seq write (980 Pro)  |                                                              | 10s                                            | 15min       | 1hr                                   | 1min             | 24hr                                  | 30d                                                    | 365d                                                    | 5min                                          | 6hr                            | 7d          |     | No hs.                                            | 11  | ~12 µs    |                                                             | NVMe SSD                                 |            | 5 GB/s     | 5000    | 512 B–4 KB             |
+|                    |                                        |                                                              | -----------                                    | ----------- | -----------                           | -----------      | -----------                           | -----------                                            | -----------                                             | -----------                                   | -----------                    | ----------- |     |                                                   |     |           |                                                             |                                          |            |            |         |                        |
+|                    |                                        |                                                              | 5.00×10^10                                     | 4.50×10^12  | 1.80×10^13                            | 3.00×10^11       | 4.32×10^14                            | 1.30×10^16                                             | 1.58×10^17                                              | 1.50×10^12                                    | 1.08×10^14                     | 3.02×10^15  |     |                                                   |     |           |                                                             |                                          |            |            |         |                        |
+| SSD-NVMe           | NVMe PCIe 3.0 SSD seq read (970 EVO)   |                                                              | 10s                                            | 15min       | 1hr                                   | 1min             | 24hr                                  | 30d                                                    | 365d                                                    | 5min                                          | 6hr                            | 7d          |     | No hs.                                            | 12  | ~20 µs    |                                                             | NVMe SSD                                 | 3.5 GB/s   |            | 3500    | 512 B–4 KB             |
+|                    |                                        |                                                              | -----------                                    | ----------- | -----------                           | -----------      | -----------                           | -----------                                            | -----------                                             | -----------                                   | -----------                    | ----------- |     |                                                   |     |           |                                                             |                                          |            |            |         |                        |
+|                    |                                        |                                                              | 3.50×10^10                                     | 3.15×10^12  | 1.26×10^13                            | 2.10×10^11       | 3.02×10^14                            | 9.07×10^15                                             | 1.10×10^17                                              | 1.05×10^12                                    | 7.56×10^13                     | 2.12×10^15  |     |                                                   |     |           |                                                             |                                          |            |            |         |                        |
+| SSD-NVMe           | NVMe PCIe 3.0 SSD seq write (970 EVO)  |                                                              | 10s                                            | 15min       | 1hr                                   | 1min             | 24hr                                  | 30d                                                    | 365d                                                    | 5min                                          | 6hr                            | 7d          |     | No hs.                                            | 13  | ~20 µs    |                                                             | NVMe SSD                                 |            | 2.5 GB/s   | 2500    | 512 B–4 KB             |
+|                    |                                        |                                                              | -----------                                    | ----------- | -----------                           | -----------      | -----------                           | -----------                                            | -----------                                             | -----------                                   | -----------                    | ----------- |     |                                                   |     |           |                                                             |                                          |            |            |         |                        |
+|                    |                                        |                                                              | 2.50×10^10                                     | 2.25×10^12  | 9.00×10^12                            | 1.50×10^11       | 2.16×10^14                            | 6.48×10^15                                             | 7.88×10^16                                              | 7.50×10^11                                    | 5.40×10^13                     | 1.51×10^15  |     |                                                   |     |           |                                                             |                                          |            |            |         |                        |
+| SSD-NVMe           | NVMe PCIe 4.0 random 4K read           |                                                              | 10s                                            | 15min       | 1hr                                   | 1min             | 24hr                                  | 30d                                                    | 365d                                                    | 5min                                          | 6hr                            | 7d          |     | No hs. ~1M IOPS.                                  | 14  | ~12 µs    |                                                             | NVMe SSD                                 | 90 MB/s    |            | 90      | 4,096 B                |
+|                    |                                        |                                                              | ----------                                     | ----------- | -----------                           | ----------       | -----------                           | -----------                                            | -----------                                             | -----------                                   | -----------                    | ----------- |     |                                                   |     |           |                                                             |                                          |            |            |         |                        |
+|                    |                                        |                                                              | 9.00×10^8                                      | 8.10×10^10  | 3.24×10^11                            | 5.40×10^9        | 7.78×10^12                            | 2.33×10^14                                             | 2.84×10^15                                              | 2.70×10^10                                    | 1.94×10^12                     | 5.44×10^13  |     |                                                   |     |           |                                                             |                                          |            |            |         |                        |
+| SSD-NVMe           | NVMe PCIe 4.0 random 4K write          |                                                              | 10s                                            | 15min       | 1hr                                   | 1min             | 24hr                                  | 30d                                                    | 365d                                                    | 5min                                          | 6hr                            | 7d          |     | No hs.                                            | 15  | ~12 µs    |                                                             | NVMe SSD                                 |            | 70 MB/s    | 70      | 4,096 B                |
+|                    |                                        |                                                              | ----------                                     | ----------- | -----------                           | ----------       | -----------                           | -----------                                            | -----------                                             | -----------                                   | -----------                    | ----------- |     |                                                   |     |           |                                                             |                                          |            |            |         |                        |
+|                    |                                        |                                                              | 7.00×10^8                                      | 6.30×10^10  | 2.52×10^11                            | 4.20×10^9        | 6.05×10^12                            | 1.81×10^14                                             | 2.21×10^15                                              | 2.10×10^10                                    | 1.51×10^12                     | 4.23×10^13  |     |                                                   |     |           |                                                             |                                          |            |            |         |                        |
+| SSD-SATA           | SATA SSD seq read (870 EVO)            |                                                              | 10s                                            | 15min       | 1hr                                   | 1min             | 24hr                                  | 30d                                                    | 365d                                                    | 5min                                          | 6hr                            | 7d          |     | No hs. SATA cmd overhead ~5 µs.                   | 16  | ~35 µs    |                                                             | SATA SSD                                 | 550 MB/s   |            | 550     | 512 B–4 KB             |
+|                    |                                        |                                                              | ----------                                     | ----------- | -----------                           | -----------      | -----------                           | -----------                                            | -----------                                             | -----------                                   | -----------                    | ----------- |     |                                                   |     |           |                                                             |                                          |            |            |         |                        |
+|                    |                                        |                                                              | 5.50×10^9                                      | 4.95×10^11  | 1.98×10^12                            | 3.30×10^10       | 4.75×10^13                            | 1.43×10^15                                             | 1.73×10^16                                              | 1.65×10^11                                    | 1.19×10^13                     | 3.33×10^14  |     |                                                   |     |           |                                                             |                                          |            |            |         |                        |
+, as u see all the         "10s": "1.00×10^13",
+        "1min": "6.00×10^13",
+        "5min": "3.00×10^14",
+        "15min": "9.00×10^14",
+        "1hr": "3.60×10^15",
+        "6hr": "2.16×10^16",
+        "24hr": "8.64×10^16",
+        "7d": "6.05×10^17",
+        "30d": "2.59×10^18",
+        "365d": "3.15×10^19"
+ are showing all over the place when they were supposed to show only directly under Bytes transferred at sustained throughput over each interval and that one was just supposed to get larger based on those needs (by more space being thrown to the left and right of it)
