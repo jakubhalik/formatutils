@@ -8,9 +8,62 @@ fn val_to_string(val: &Value) -> String {
         Value::Bool(bool_val) => bool_val.to_string(),
         Value::Null => "".to_string(),
         Value::Array(arr_val) => {
-            let items: Vec<String> = 
-                arr_val.iter().map(|inner_val| val_to_string(inner_val)).collect();
-            items.join(", ")
+            let all_objects = arr_val.iter().all(|item| item.is_object()) && !arr_val.is_empty();
+            if all_objects {
+                let first_obj = arr_val[0].as_object().unwrap();
+                let keys: Vec<String> = first_obj.keys().cloned().collect();
+
+                let all_rows: Vec<Vec<String>> = arr_val
+                    .iter()
+                    .map(|item| {
+                        let obj = item.as_object().unwrap();
+                        keys.iter()
+                            .map(|key| val_to_string(obj.get(key).unwrap_or(&Value::Null)))
+                            .collect()
+                    })
+                    .collect();
+
+                let col_widths: Vec<usize> = keys
+                    .iter()
+                    .enumerate()
+                    .map(|(col_idx, key)| {
+                        let max_cell = all_rows
+                            .iter()
+                            .map(|row| row.get(col_idx).map(|cell| cell.len()).unwrap_or(0))
+                            .max()
+                            .unwrap_or(0);
+                        std::cmp::max(key.len(), max_cell)
+                    })
+                    .collect();
+
+                let header_cells: Vec<String> = keys
+                    .iter()
+                    .enumerate()
+                    .map(|(col_idx, key)| pad_right(key, col_widths[col_idx]))
+                    .collect();
+
+                let separator_cells: Vec<String> = col_widths
+                    .iter()
+                    .map(|width| "-".repeat(*width))
+                    .collect();
+
+                let mut lines = Vec::new();
+                lines.push(header_cells.join("  "));
+                lines.push(separator_cells.join("  "));
+                for row in &all_rows {
+                    let val_cells: Vec<String> = row
+                        .iter()
+                        .enumerate()
+                        .map(|(col_idx, cell)| pad_right(cell, col_widths[col_idx]))
+                        .collect();
+                    lines.push(val_cells.join("  "));
+                }
+                lines.join("\n")
+            } else {
+                let items: Vec<String> =
+                    arr_val.iter().map(|inner_val| val_to_string(inner_val)).collect();
+                items.join(", ")
+            }
         }
         Value::Object(map_val) => {
             let sub_keys: Vec<&String> = map_val.keys().collect();
@@ -138,7 +191,7 @@ fn find_header_object(root: &Value, table_keys: &[String]) -> Option<BTreeMap<St
 }
 
 fn pad_right(content: &str, width: usize) -> String {
-    let padding = width.saturating_sub(content.len());
+    let padding = width.saturating_sub(content.chars().count());
     format!("{}{}", content, " ".repeat(padding))
 }
 
@@ -225,7 +278,7 @@ fn build_table(
                 .iter()
                 .map(|row| {
                     row.get(col_idx)
-                        .map(|cell| cell.lines().map(|line| line.len()).max().unwrap_or(0))
+                        .map(|cell| cell.lines().map(|line| line.chars.count()).max().unwrap_or(0))
                         .unwrap_or(0)
                 })
                 .max()
