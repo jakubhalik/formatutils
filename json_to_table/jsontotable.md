@@ -18,7 +18,13 @@
 - pipe stdout into it
 
 `curl https://some_endpoint_of_urs_with_ur_data.com | jsontotable`
-`echo '{"header": {"someKey": "someVal","diffKey": "diffVal"}, "someArr": [{someKey": "someVal1","diffKey": "diffVal1"},someKey": "someVal2","diffKey": "diffVal2"]}' | jsontotable`
+
+`echo '{"header": {"someKey": "someVal","diffKey": "diffVal"}, "someArr": [{"someKey": "someVal1","diffKey": "diffVal1"},{"someKey": "someVal2","diffKey": "diffVal2"}]}' | jsontotable`
+
+> | someVal  | diffVal  |
+> |----------|----------|
+> | someVal1 | diffVal1 |
+> | someVal2 | diffVal2 |
 
 - reverse - parse the table to a json
 

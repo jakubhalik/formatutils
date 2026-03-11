@@ -307,6 +307,79 @@ fn build_table(
     Ok(lines.join("\n"))
 }
 
+fn parse_table_to_json(input: &str) -> Result<String, String> {
+    let lines: Vec<&str> = input
+        .lines()
+        .filter(|line| !line.trim().is_empty())
+        .collect();
+
+    if lines.len() < 3 {
+        return Err("Table must have at least a header, separator, and one data row".to_string());
+    }
+
+    let parse_row = |line: &str| -> Vec<String> {
+        let trimmed = line.trim();
+        let stripped = if trimmed.starts_with('|') && trimmed.ends_with('|') {
+            &trimmed[1..trimmed.len() - 1]
+        } else {
+            trimmed
+        };
+        stripped
+            .split('|')
+            .map(|cell| cell.trim().to_string())
+            .collect()
+    };
+
+    let headers = parse_row(lines[0]);
+
+    let separator_idx = lines
+        .iter()
+        .position(|line| {
+            let stripped = line.trim().trim_start_matches('|').trim_end_matches('|');
+            stripped
+                .split('|')
+                .all(|cell| cell.trim().chars().all(|ch| ch == '-' || ch == ' '))
+        })
+        .ok_or("No separator line found")?;
+
+    let data_lines = &lines[separator_idx + 1..];
+
+    let mut rows: Vec<Value> = Vec::new();
+
+    for data_line in data_lines {
+        let cells = parse_row(data_line);
+        let mut obj = serde_json::Map::new();
+        for (col_idx, header) in headers.iter().enumerate() {
+            if header.is_empty() {
+                continue;
+            }
+            let cell_val = cells.get(col_idx).map(|cell| cell.as_str()).unwrap_or("");
+            if cell_val.is_empty() {
+                obj.insert(header.clone(), Value::Null);
+            } else if let Ok(num) = cell_val.parse::<i64>() {
+                obj.insert(header.clone(), Value::Number(num.into()));
+            } else if let Ok(num) = cell_val.parse::<f64>() {
+                if let Some(json_num) = serde_json::Number::from_f64(num) {
+                    obj.insert(header.clone(), Value::Number(json_num));
+                } else {
+                    obj.insert(header.clone(), Value::String(cell_val.to_string()));
+                }
+            } else if cell_val == "true" {
+                obj.insert(header.clone(), Value::Bool(true));
+            } else if cell_val == "false" {
+                obj.insert(header.clone(), Value::Bool(false));
+            } else {
+                obj.insert(header.clone(), Value::String(cell_val.to_string()));
+            }
+        }
+        if !obj.is_empty() {
+            rows.push(Value::Object(obj));
+        }
+    }
+
+    serde_json::to_string_pretty(&rows).map_err(|err| format!("Failed to serialize JSON: {}", err))
+}
+
 fn run(input: &str) -> Result<String, String> {
     let parsed: Value =
         serde_json::from_str(input).map_err(|err| format!("Invalid JSON: {}", err))?;
@@ -326,22 +399,38 @@ fn run(input: &str) -> Result<String, String> {
 fn main() {
     let args: Vec<String> = std::env::args().collect();
 
-    let input = if args.len() > 1 {
-        std::fs::read_to_string(&args[1])
-            .map_err(|err| format!("Failed to read file '{}': {}", &args[1], err))
+    let reverse = args.iter().any(|arg| arg == "-r" || arg == "--reverse");
+
+    let file_args: Vec<&String> = args
+        .iter()
+        .skip(1)
+        .filter(|arg| *arg != "-r" && *arg != "--reverse")
+        .collect();
+
+    let input = if let Some(file_path) = file_args.first() {
+        std::fs::read_to_string(file_path)
+            .map_err(|err| format!("Failed to read file '{}': {}", file_path, err))
     } else {
         std::io::read_to_string(std::io::stdin())
             .map_err(|err| format!("Failed to read stdin: {}", err))
     };
 
+
     match input {
-        Ok(content) => match run(&content) {
-            Ok(table) => println!("{}", table),
-            Err(err) => {
-                eprintln!("Error: {}", err);
-                std::process::exit(1);
+        Ok(content) => {
+            let result = if reverse {
+                parse_table_to_json(&content)
+            } else {
+                run(&content)
+            };
+            match result {
+                Ok(output) => println!("{}", output),
+                Err(err) => {
+                    eprintln!("Error: {}", err);
+                    std::process::exit(1);
+                }
             }
-        },
+        }
         Err(err) => {
             eprintln!("Error: {}", err);
             std::process::exit(1);
