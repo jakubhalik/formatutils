@@ -1,0 +1,1172 @@
+[
+  {
+    "Country": "India",
+    "Population 2026": "1.48 * 10^9",
+    "World Share": "1.78 * 10^-1",
+    "Land Area (Km²)": "2.97 * 10^6"
+  },
+  {
+    "Country": "China",
+    "Population 2026": "1.41 * 10^9",
+    "World Share": "1.70 * 10^-1",
+    "Land Area (Km²)": "9.39 * 10^6"
+  },
+  {
+    "Country": "United States",
+    "Population 2026": "3.49 * 10^8",
+    "World Share": "4.20 * 10^-2",
+    "Land Area (Km²)": "9.15 * 10^6"
+  },
+  {
+    "Country": "Indonesia",
+    "Population 2026": "2.88 * 10^8",
+    "World Share": "3.47 * 10^-2",
+    "Land Area (Km²)": "1.81 * 10^6"
+  },
+  {
+    "Country": "Pakistan",
+    "Population 2026": "2.59 * 10^8",
+    "World Share": "3.12 * 10^-2",
+    "Land Area (Km²)": "7.71 * 10^5"
+  },
+  {
+    "Country": "Nigeria",
+    "Population 2026": "2.42 * 10^8",
+    "World Share": "2.92 * 10^-2",
+    "Land Area (Km²)": "9.11 * 10^5"
+  },
+  {
+    "Country": "Brazil",
+    "Population 2026": "2.14 * 10^8",
+    "World Share": "2.57 * 10^-2",
+    "Land Area (Km²)": "8.36 * 10^6"
+  },
+  {
+    "Country": "Bangladesh",
+    "Population 2026": "1.78 * 10^8",
+    "World Share": "2.14 * 10^-2",
+    "Land Area (Km²)": "1.30 * 10^5"
+  },
+  {
+    "Country": "Russia",
+    "Population 2026": "1.43 * 10^8",
+    "World Share": "1.73 * 10^-2",
+    "Land Area (Km²)": "1.64 * 10^7"
+  },
+  {
+    "Country": "Ethiopia",
+    "Population 2026": "1.39 * 10^8",
+    "World Share": "1.67 * 10^-2",
+    "Land Area (Km²)": "1.00 * 10^6"
+  },
+  {
+    "Country": "Mexico",
+    "Population 2026": "1.33 * 10^8",
+    "World Share": "1.60 * 10^-2",
+    "Land Area (Km²)": "1.94 * 10^6"
+  },
+  {
+    "Country": "Japan",
+    "Population 2026": "1.22 * 10^8",
+    "World Share": "1.47 * 10^-2",
+    "Land Area (Km²)": "3.65 * 10^5"
+  },
+  {
+    "Country": "Egypt",
+    "Population 2026": "1.20 * 10^8",
+    "World Share": "1.45 * 10^-2",
+    "Land Area (Km²)": "9.95 * 10^5"
+  },
+  {
+    "Country": "Philippines",
+    "Population 2026": "1.18 * 10^8",
+    "World Share": "1.42 * 10^-2",
+    "Land Area (Km²)": "2.98 * 10^5"
+  },
+  {
+    "Country": "DR Congo",
+    "Population 2026": "1.16 * 10^8",
+    "World Share": "1.40 * 10^-2",
+    "Land Area (Km²)": "2.27 * 10^6"
+  },
+  {
+    "Country": "Vietnam",
+    "Population 2026": "1.02 * 10^8",
+    "World Share": "1.23 * 10^-2",
+    "Land Area (Km²)": "3.10 * 10^5"
+  },
+  {
+    "Country": "Iran",
+    "Population 2026": "9.32 * 10^7",
+    "World Share": "1.12 * 10^-2",
+    "Land Area (Km²)": "1.63 * 10^6"
+  },
+  {
+    "Country": "Turkey",
+    "Population 2026": "8.79 * 10^7",
+    "World Share": "1.06 * 10^-2",
+    "Land Area (Km²)": "7.70 * 10^5"
+  },
+  {
+    "Country": "Germany",
+    "Population 2026": "8.36 * 10^7",
+    "World Share": "1.01 * 10^-2",
+    "Land Area (Km²)": "3.49 * 10^5"
+  },
+  {
+    "Country": "Tanzania",
+    "Population 2026": "7.26 * 10^7",
+    "World Share": "8.70 * 10^-3",
+    "Land Area (Km²)": "8.86 * 10^5"
+  },
+  {
+    "Country": "Thailand",
+    "Population 2026": "7.16 * 10^7",
+    "World Share": "8.60 * 10^-3",
+    "Land Area (Km²)": "5.11 * 10^5"
+  },
+  {
+    "Country": "United Kingdom",
+    "Population 2026": "6.99 * 10^7",
+    "World Share": "8.40 * 10^-3",
+    "Land Area (Km²)": "2.42 * 10^5"
+  },
+  {
+    "Country": "France",
+    "Population 2026": "6.67 * 10^7",
+    "World Share": "8.00 * 10^-3",
+    "Land Area (Km²)": "5.48 * 10^5"
+  },
+  {
+    "Country": "South Africa",
+    "Population 2026": "6.55 * 10^7",
+    "World Share": "7.90 * 10^-3",
+    "Land Area (Km²)": "1.21 * 10^6"
+  },
+  {
+    "Country": "Italy",
+    "Population 2026": "5.89 * 10^7",
+    "World Share": "7.10 * 10^-3",
+    "Land Area (Km²)": "2.94 * 10^5"
+  },
+  {
+    "Country": "Kenya",
+    "Population 2026": "5.86 * 10^7",
+    "World Share": "7.10 * 10^-3",
+    "Land Area (Km²)": "5.69 * 10^5"
+  },
+  {
+    "Country": "Myanmar",
+    "Population 2026": "5.52 * 10^7",
+    "World Share": "6.60 * 10^-3",
+    "Land Area (Km²)": "6.53 * 10^5"
+  },
+  {
+    "Country": "Colombia",
+    "Population 2026": "5.39 * 10^7",
+    "World Share": "6.50 * 10^-3",
+    "Land Area (Km²)": "1.11 * 10^6"
+  },
+  {
+    "Country": "Sudan",
+    "Population 2026": "5.33 * 10^7",
+    "World Share": "6.40 * 10^-3",
+    "Land Area (Km²)": "1.77 * 10^6"
+  },
+  {
+    "Country": "Uganda",
+    "Population 2026": "5.28 * 10^7",
+    "World Share": "6.40 * 10^-3",
+    "Land Area (Km²)": "2.00 * 10^5"
+  },
+  {
+    "Country": "South Korea",
+    "Population 2026": "5.16 * 10^7",
+    "World Share": "6.20 * 10^-3",
+    "Land Area (Km²)": "9.72 * 10^4"
+  },
+  {
+    "Country": "Algeria",
+    "Population 2026": "4.80 * 10^7",
+    "World Share": "5.80 * 10^-3",
+    "Land Area (Km²)": "2.38 * 10^6"
+  },
+  {
+    "Country": "Iraq",
+    "Population 2026": "4.80 * 10^7",
+    "World Share": "5.80 * 10^-3",
+    "Land Area (Km²)": "4.34 * 10^5"
+  },
+  {
+    "Country": "Spain",
+    "Population 2026": "4.79 * 10^7",
+    "World Share": "5.80 * 10^-3",
+    "Land Area (Km²)": "4.99 * 10^5"
+  },
+  {
+    "Country": "Argentina",
+    "Population 2026": "4.60 * 10^7",
+    "World Share": "5.50 * 10^-3",
+    "Land Area (Km²)": "2.74 * 10^6"
+  },
+  {
+    "Country": "Afghanistan",
+    "Population 2026": "4.50 * 10^7",
+    "World Share": "5.40 * 10^-3",
+    "Land Area (Km²)": "6.53 * 10^5"
+  },
+  {
+    "Country": "Yemen",
+    "Population 2026": "4.30 * 10^7",
+    "World Share": "5.20 * 10^-3",
+    "Land Area (Km²)": "5.28 * 10^5"
+  },
+  {
+    "Country": "Canada",
+    "Population 2026": "4.05 * 10^7",
+    "World Share": "4.90 * 10^-3",
+    "Land Area (Km²)": "9.09 * 10^6"
+  },
+  {
+    "Country": "Angola",
+    "Population 2026": "4.02 * 10^7",
+    "World Share": "4.80 * 10^-3",
+    "Land Area (Km²)": "1.25 * 10^6"
+  },
+  {
+    "Country": "Ukraine",
+    "Population 2026": "3.95 * 10^7",
+    "World Share": "4.80 * 10^-3",
+    "Land Area (Km²)": "5.79 * 10^5"
+  },
+  {
+    "Country": "Morocco",
+    "Population 2026": "3.88 * 10^7",
+    "World Share": "4.70 * 10^-3",
+    "Land Area (Km²)": "4.46 * 10^5"
+  },
+  {
+    "Country": "Poland",
+    "Population 2026": "3.78 * 10^7",
+    "World Share": "4.60 * 10^-3",
+    "Land Area (Km²)": "3.06 * 10^5"
+  },
+  {
+    "Country": "Uzbekistan",
+    "Population 2026": "3.77 * 10^7",
+    "World Share": "4.50 * 10^-3",
+    "Land Area (Km²)": "4.25 * 10^5"
+  },
+  {
+    "Country": "Mozambique",
+    "Population 2026": "3.66 * 10^7",
+    "World Share": "4.40 * 10^-3",
+    "Land Area (Km²)": "7.86 * 10^5"
+  },
+  {
+    "Country": "Malaysia",
+    "Population 2026": "3.64 * 10^7",
+    "World Share": "4.40 * 10^-3",
+    "Land Area (Km²)": "3.29 * 10^5"
+  },
+  {
+    "Country": "Ghana",
+    "Population 2026": "3.57 * 10^7",
+    "World Share": "4.30 * 10^-3",
+    "Land Area (Km²)": "2.28 * 10^5"
+  },
+  {
+    "Country": "Saudi Arabia",
+    "Population 2026": "3.52 * 10^7",
+    "World Share": "4.20 * 10^-3",
+    "Land Area (Km²)": "2.15 * 10^6"
+  },
+  {
+    "Country": "Peru",
+    "Population 2026": "3.49 * 10^7",
+    "World Share": "4.20 * 10^-3",
+    "Land Area (Km²)": "1.28 * 10^6"
+  },
+  {
+    "Country": "Madagascar",
+    "Population 2026": "3.35 * 10^7",
+    "World Share": "4.00 * 10^-3",
+    "Land Area (Km²)": "5.82 * 10^5"
+  },
+  {
+    "Country": "Côte d'Ivoire",
+    "Population 2026": "3.35 * 10^7",
+    "World Share": "4.00 * 10^-3",
+    "Land Area (Km²)": "3.18 * 10^5"
+  },
+  {
+    "Country": "Cameroon",
+    "Population 2026": "3.06 * 10^7",
+    "World Share": "3.70 * 10^-3",
+    "Land Area (Km²)": "4.73 * 10^5"
+  },
+  {
+    "Country": "Nepal",
+    "Population 2026": "2.96 * 10^7",
+    "World Share": "3.60 * 10^-3",
+    "Land Area (Km²)": "1.43 * 10^5"
+  },
+  {
+    "Country": "Niger",
+    "Population 2026": "2.88 * 10^7",
+    "World Share": "3.50 * 10^-3",
+    "Land Area (Km²)": "1.27 * 10^6"
+  },
+  {
+    "Country": "Venezuela",
+    "Population 2026": "2.86 * 10^7",
+    "World Share": "3.40 * 10^-3",
+    "Land Area (Km²)": "8.82 * 10^5"
+  },
+  {
+    "Country": "Australia",
+    "Population 2026": "2.72 * 10^7",
+    "World Share": "3.30 * 10^-3",
+    "Land Area (Km²)": "7.68 * 10^6"
+  },
+  {
+    "Country": "North Korea",
+    "Population 2026": "2.66 * 10^7",
+    "World Share": "3.20 * 10^-3",
+    "Land Area (Km²)": "1.20 * 10^5"
+  },
+  {
+    "Country": "Syria",
+    "Population 2026": "2.65 * 10^7",
+    "World Share": "3.20 * 10^-3",
+    "Land Area (Km²)": "1.84 * 10^5"
+  },
+  {
+    "Country": "Mali",
+    "Population 2026": "2.59 * 10^7",
+    "World Share": "3.10 * 10^-3",
+    "Land Area (Km²)": "1.22 * 10^6"
+  },
+  {
+    "Country": "Burkina Faso",
+    "Population 2026": "2.46 * 10^7",
+    "World Share": "3.00 * 10^-3",
+    "Land Area (Km²)": "2.74 * 10^5"
+  },
+  {
+    "Country": "Sri Lanka",
+    "Population 2026": "2.33 * 10^7",
+    "World Share": "2.80 * 10^-3",
+    "Land Area (Km²)": "6.27 * 10^4"
+  },
+  {
+    "Country": "Malawi",
+    "Population 2026": "2.28 * 10^7",
+    "World Share": "2.70 * 10^-3",
+    "Land Area (Km²)": "9.43 * 10^4"
+  },
+  {
+    "Country": "Zambia",
+    "Population 2026": "2.25 * 10^7",
+    "World Share": "2.70 * 10^-3",
+    "Land Area (Km²)": "7.43 * 10^5"
+  },
+  {
+    "Country": "Chad",
+    "Population 2026": "2.16 * 10^7",
+    "World Share": "2.60 * 10^-3",
+    "Land Area (Km²)": "1.26 * 10^6"
+  },
+  {
+    "Country": "Kazakhstan",
+    "Population 2026": "2.11 * 10^7",
+    "World Share": "2.50 * 10^-3",
+    "Land Area (Km²)": "2.70 * 10^6"
+  },
+  {
+    "Country": "Somalia",
+    "Population 2026": "2.03 * 10^7",
+    "World Share": "2.40 * 10^-3",
+    "Land Area (Km²)": "6.27 * 10^5"
+  },
+  {
+    "Country": "Chile",
+    "Population 2026": "1.99 * 10^7",
+    "World Share": "2.40 * 10^-3",
+    "Land Area (Km²)": "7.44 * 10^5"
+  },
+  {
+    "Country": "Senegal",
+    "Population 2026": "1.94 * 10^7",
+    "World Share": "2.30 * 10^-3",
+    "Land Area (Km²)": "1.93 * 10^5"
+  },
+  {
+    "Country": "Guatemala",
+    "Population 2026": "1.90 * 10^7",
+    "World Share": "2.30 * 10^-3",
+    "Land Area (Km²)": "1.07 * 10^5"
+  },
+  {
+    "Country": "Romania",
+    "Population 2026": "1.88 * 10^7",
+    "World Share": "2.30 * 10^-3",
+    "Land Area (Km²)": "2.30 * 10^5"
+  },
+  {
+    "Country": "Netherlands",
+    "Population 2026": "1.84 * 10^7",
+    "World Share": "2.20 * 10^-3",
+    "Land Area (Km²)": "3.37 * 10^4"
+  },
+  {
+    "Country": "Ecuador",
+    "Population 2026": "1.84 * 10^7",
+    "World Share": "2.20 * 10^-3",
+    "Land Area (Km²)": "2.48 * 10^5"
+  },
+  {
+    "Country": "Cambodia",
+    "Population 2026": "1.81 * 10^7",
+    "World Share": "2.20 * 10^-3",
+    "Land Area (Km²)": "1.77 * 10^5"
+  },
+  {
+    "Country": "Zimbabwe",
+    "Population 2026": "1.73 * 10^7",
+    "World Share": "2.10 * 10^-3",
+    "Land Area (Km²)": "3.87 * 10^5"
+  },
+  {
+    "Country": "Guinea",
+    "Population 2026": "1.54 * 10^7",
+    "World Share": "1.90 * 10^-3",
+    "Land Area (Km²)": "2.46 * 10^5"
+  },
+  {
+    "Country": "Benin",
+    "Population 2026": "1.52 * 10^7",
+    "World Share": "1.80 * 10^-3",
+    "Land Area (Km²)": "1.13 * 10^5"
+  },
+  {
+    "Country": "Rwanda",
+    "Population 2026": "1.49 * 10^7",
+    "World Share": "1.80 * 10^-3",
+    "Land Area (Km²)": "2.47 * 10^4"
+  },
+  {
+    "Country": "Burundi",
+    "Population 2026": "1.47 * 10^7",
+    "World Share": "1.80 * 10^-3",
+    "Land Area (Km²)": "2.57 * 10^4"
+  },
+  {
+    "Country": "Bolivia",
+    "Population 2026": "1.27 * 10^7",
+    "World Share": "1.50 * 10^-3",
+    "Land Area (Km²)": "1.08 * 10^6"
+  },
+  {
+    "Country": "South Sudan",
+    "Population 2026": "1.24 * 10^7",
+    "World Share": "1.50 * 10^-3",
+    "Land Area (Km²)": "6.11 * 10^5"
+  },
+  {
+    "Country": "Tunisia",
+    "Population 2026": "1.24 * 10^7",
+    "World Share": "1.50 * 10^-3",
+    "Land Area (Km²)": "1.55 * 10^5"
+  },
+  {
+    "Country": "Haiti",
+    "Population 2026": "1.20 * 10^7",
+    "World Share": "1.50 * 10^-3",
+    "Land Area (Km²)": "2.76 * 10^4"
+  },
+  {
+    "Country": "Belgium",
+    "Population 2026": "1.18 * 10^7",
+    "World Share": "1.40 * 10^-3",
+    "Land Area (Km²)": "3.03 * 10^4"
+  },
+  {
+    "Country": "Dominican Republic",
+    "Population 2026": "1.16 * 10^7",
+    "World Share": "1.40 * 10^-3",
+    "Land Area (Km²)": "4.83 * 10^4"
+  },
+  {
+    "Country": "Jordan",
+    "Population 2026": "1.16 * 10^7",
+    "World Share": "1.40 * 10^-3",
+    "Land Area (Km²)": "8.88 * 10^4"
+  },
+  {
+    "Country": "United Arab Emirates",
+    "Population 2026": "1.16 * 10^7",
+    "World Share": "1.40 * 10^-3",
+    "Land Area (Km²)": "8.36 * 10^4"
+  },
+  {
+    "Country": "Honduras",
+    "Population 2026": "1.12 * 10^7",
+    "World Share": "1.30 * 10^-3",
+    "Land Area (Km²)": "1.12 * 10^5"
+  },
+  {
+    "Country": "Tajikistan",
+    "Population 2026": "1.10 * 10^7",
+    "World Share": "1.30 * 10^-3",
+    "Land Area (Km²)": "1.40 * 10^5"
+  },
+  {
+    "Country": "Papua New Guinea",
+    "Population 2026": "1.09 * 10^7",
+    "World Share": "1.30 * 10^-3",
+    "Land Area (Km²)": "4.53 * 10^5"
+  },
+  {
+    "Country": "Cuba",
+    "Population 2026": "1.09 * 10^7",
+    "World Share": "1.30 * 10^-3",
+    "Land Area (Km²)": "1.06 * 10^5"
+  },
+  {
+    "Country": "Sweden",
+    "Population 2026": "1.07 * 10^7",
+    "World Share": "1.30 * 10^-3",
+    "Land Area (Km²)": "4.10 * 10^5"
+  },
+  {
+    "Country": "Czech Republic (Czechia)",
+    "Population 2026": "1.05 * 10^7",
+    "World Share": "1.30 * 10^-3",
+    "Land Area (Km²)": "7.72 * 10^4"
+  },
+  {
+    "Country": "Azerbaijan",
+    "Population 2026": "1.05 * 10^7",
+    "World Share": "1.30 * 10^-3",
+    "Land Area (Km²)": "8.27 * 10^4"
+  },
+  {
+    "Country": "Portugal",
+    "Population 2026": "1.04 * 10^7",
+    "World Share": "1.30 * 10^-3",
+    "Land Area (Km²)": "9.16 * 10^4"
+  },
+  {
+    "Country": "Togo",
+    "Population 2026": "9.93 * 10^6",
+    "World Share": "1.20 * 10^-3",
+    "Land Area (Km²)": "5.44 * 10^4"
+  },
+  {
+    "Country": "Greece",
+    "Population 2026": "9.90 * 10^6",
+    "World Share": "1.20 * 10^-3",
+    "Land Area (Km²)": "1.29 * 10^5"
+  },
+  {
+    "Country": "Israel",
+    "Population 2026": "9.65 * 10^6",
+    "World Share": "1.20 * 10^-3",
+    "Land Area (Km²)": "2.16 * 10^4"
+  },
+  {
+    "Country": "Hungary",
+    "Population 2026": "9.59 * 10^6",
+    "World Share": "1.20 * 10^-3",
+    "Land Area (Km²)": "9.05 * 10^4"
+  },
+  {
+    "Country": "Austria",
+    "Population 2026": "9.11 * 10^6",
+    "World Share": "1.10 * 10^-3",
+    "Land Area (Km²)": "8.24 * 10^4"
+  },
+  {
+    "Country": "Switzerland",
+    "Population 2026": "9.01 * 10^6",
+    "World Share": "1.10 * 10^-3",
+    "Land Area (Km²)": "3.95 * 10^4"
+  },
+  {
+    "Country": "Sierra Leone",
+    "Population 2026": "9.00 * 10^6",
+    "World Share": "1.10 * 10^-3",
+    "Land Area (Km²)": "7.22 * 10^4"
+  },
+  {
+    "Country": "Belarus",
+    "Population 2026": "8.94 * 10^6",
+    "World Share": "1.10 * 10^-3",
+    "Land Area (Km²)": "2.03 * 10^5"
+  },
+  {
+    "Country": "Laos",
+    "Population 2026": "7.97 * 10^6",
+    "World Share": "9.60 * 10^-4",
+    "Land Area (Km²)": "2.31 * 10^5"
+  },
+  {
+    "Country": "Turkmenistan",
+    "Population 2026": "7.74 * 10^6",
+    "World Share": "9.30 * 10^-4",
+    "Land Area (Km²)": "4.70 * 10^5"
+  },
+  {
+    "Country": "Libya",
+    "Population 2026": "7.54 * 10^6",
+    "World Share": "9.10 * 10^-4",
+    "Land Area (Km²)": "1.76 * 10^6"
+  },
+  {
+    "Country": "Kyrgyzstan",
+    "Population 2026": "7.40 * 10^6",
+    "World Share": "8.90 * 10^-4",
+    "Land Area (Km²)": "1.92 * 10^5"
+  },
+  {
+    "Country": "Nicaragua",
+    "Population 2026": "7.10 * 10^6",
+    "World Share": "8.60 * 10^-4",
+    "Land Area (Km²)": "1.20 * 10^5"
+  },
+  {
+    "Country": "Paraguay",
+    "Population 2026": "7.10 * 10^6",
+    "World Share": "8.50 * 10^-4",
+    "Land Area (Km²)": "3.97 * 10^5"
+  },
+  {
+    "Country": "Bulgaria",
+    "Population 2026": "6.67 * 10^6",
+    "World Share": "8.00 * 10^-4",
+    "Land Area (Km²)": "1.09 * 10^5"
+  },
+  {
+    "Country": "Serbia",
+    "Population 2026": "6.64 * 10^6",
+    "World Share": "8.00 * 10^-4",
+    "Land Area (Km²)": "8.75 * 10^4"
+  },
+  {
+    "Country": "Congo",
+    "Population 2026": "6.64 * 10^6",
+    "World Share": "8.00 * 10^-4",
+    "Land Area (Km²)": "3.42 * 10^5"
+  },
+  {
+    "Country": "El Salvador",
+    "Population 2026": "6.39 * 10^6",
+    "World Share": "7.70 * 10^-4",
+    "Land Area (Km²)": "2.07 * 10^4"
+  },
+  {
+    "Country": "Denmark",
+    "Population 2026": "6.02 * 10^6",
+    "World Share": "7.30 * 10^-4",
+    "Land Area (Km²)": "4.24 * 10^4"
+  },
+  {
+    "Country": "Singapore",
+    "Population 2026": "5.91 * 10^6",
+    "World Share": "7.10 * 10^-4",
+    "Land Area (Km²)": "7.00 * 10^2"
+  },
+  {
+    "Country": "Lebanon",
+    "Population 2026": "5.90 * 10^6",
+    "World Share": "7.10 * 10^-4",
+    "Land Area (Km²)": "1.02 * 10^4"
+  },
+  {
+    "Country": "Liberia",
+    "Population 2026": "5.85 * 10^6",
+    "World Share": "7.10 * 10^-4",
+    "Land Area (Km²)": "9.63 * 10^4"
+  },
+  {
+    "Country": "Central African Republic",
+    "Population 2026": "5.70 * 10^6",
+    "World Share": "6.90 * 10^-4",
+    "Land Area (Km²)": "6.23 * 10^5"
+  },
+  {
+    "Country": "State of Palestine",
+    "Population 2026": "5.69 * 10^6",
+    "World Share": "6.90 * 10^-4",
+    "Land Area (Km²)": "6.02 * 10^3"
+  },
+  {
+    "Country": "Oman",
+    "Population 2026": "5.67 * 10^6",
+    "World Share": "6.80 * 10^-4",
+    "Land Area (Km²)": "3.10 * 10^5"
+  },
+  {
+    "Country": "Norway",
+    "Population 2026": "5.65 * 10^6",
+    "World Share": "6.80 * 10^-4",
+    "Land Area (Km²)": "3.65 * 10^5"
+  },
+  {
+    "Country": "Finland",
+    "Population 2026": "5.62 * 10^6",
+    "World Share": "6.80 * 10^-4",
+    "Land Area (Km²)": "3.04 * 10^5"
+  },
+  {
+    "Country": "Mauritania",
+    "Population 2026": "5.46 * 10^6",
+    "World Share": "6.60 * 10^-4",
+    "Land Area (Km²)": "1.03 * 10^6"
+  },
+  {
+    "Country": "Slovakia",
+    "Population 2026": "5.45 * 10^6",
+    "World Share": "6.60 * 10^-4",
+    "Land Area (Km²)": "4.81 * 10^4"
+  },
+  {
+    "Country": "Ireland",
+    "Population 2026": "5.36 * 10^6",
+    "World Share": "6.50 * 10^-4",
+    "Land Area (Km²)": "6.89 * 10^4"
+  },
+  {
+    "Country": "New Zealand",
+    "Population 2026": "5.29 * 10^6",
+    "World Share": "6.40 * 10^-4",
+    "Land Area (Km²)": "2.63 * 10^5"
+  },
+  {
+    "Country": "Costa Rica",
+    "Population 2026": "5.17 * 10^6",
+    "World Share": "6.20 * 10^-4",
+    "Land Area (Km²)": "5.11 * 10^4"
+  },
+  {
+    "Country": "Kuwait",
+    "Population 2026": "5.10 * 10^6",
+    "World Share": "6.10 * 10^-4",
+    "Land Area (Km²)": "1.78 * 10^4"
+  },
+  {
+    "Country": "Panama",
+    "Population 2026": "4.63 * 10^6",
+    "World Share": "5.60 * 10^-4",
+    "Land Area (Km²)": "7.43 * 10^4"
+  },
+  {
+    "Country": "Croatia",
+    "Population 2026": "3.82 * 10^6",
+    "World Share": "4.60 * 10^-4",
+    "Land Area (Km²)": "5.60 * 10^4"
+  },
+  {
+    "Country": "Georgia",
+    "Population 2026": "3.80 * 10^6",
+    "World Share": "4.60 * 10^-4",
+    "Land Area (Km²)": "6.95 * 10^4"
+  },
+  {
+    "Country": "Eritrea",
+    "Population 2026": "3.68 * 10^6",
+    "World Share": "4.40 * 10^-4",
+    "Land Area (Km²)": "1.01 * 10^5"
+  },
+  {
+    "Country": "Mongolia",
+    "Population 2026": "3.56 * 10^6",
+    "World Share": "4.30 * 10^-4",
+    "Land Area (Km²)": "1.55 * 10^6"
+  },
+  {
+    "Country": "Uruguay",
+    "Population 2026": "3.38 * 10^6",
+    "World Share": "4.10 * 10^-4",
+    "Land Area (Km²)": "1.75 * 10^5"
+  },
+  {
+    "Country": "Qatar",
+    "Population 2026": "3.17 * 10^6",
+    "World Share": "3.80 * 10^-4",
+    "Land Area (Km²)": "1.16 * 10^4"
+  },
+  {
+    "Country": "Namibia",
+    "Population 2026": "3.15 * 10^6",
+    "World Share": "3.80 * 10^-4",
+    "Land Area (Km²)": "8.23 * 10^5"
+  },
+  {
+    "Country": "Bosnia and Herzegovina",
+    "Population 2026": "3.11 * 10^6",
+    "World Share": "3.80 * 10^-4",
+    "Land Area (Km²)": "5.10 * 10^4"
+  },
+  {
+    "Country": "Moldova",
+    "Population 2026": "2.96 * 10^6",
+    "World Share": "3.60 * 10^-4",
+    "Land Area (Km²)": "3.29 * 10^4"
+  },
+  {
+    "Country": "Armenia",
+    "Population 2026": "2.93 * 10^6",
+    "World Share": "3.50 * 10^-4",
+    "Land Area (Km²)": "2.85 * 10^4"
+  },
+  {
+    "Country": "Gambia",
+    "Population 2026": "2.88 * 10^6",
+    "World Share": "3.50 * 10^-4",
+    "Land Area (Km²)": "1.01 * 10^4"
+  },
+  {
+    "Country": "Jamaica",
+    "Population 2026": "2.83 * 10^6",
+    "World Share": "3.40 * 10^-4",
+    "Land Area (Km²)": "1.08 * 10^4"
+  },
+  {
+    "Country": "Lithuania",
+    "Population 2026": "2.80 * 10^6",
+    "World Share": "3.40 * 10^-4",
+    "Land Area (Km²)": "6.27 * 10^4"
+  },
+  {
+    "Country": "Albania",
+    "Population 2026": "2.75 * 10^6",
+    "World Share": "3.30 * 10^-4",
+    "Land Area (Km²)": "2.74 * 10^4"
+  },
+  {
+    "Country": "Gabon",
+    "Population 2026": "2.65 * 10^6",
+    "World Share": "3.20 * 10^-4",
+    "Land Area (Km²)": "2.58 * 10^5"
+  },
+  {
+    "Country": "Botswana",
+    "Population 2026": "2.60 * 10^6",
+    "World Share": "3.10 * 10^-4",
+    "Land Area (Km²)": "5.67 * 10^5"
+  },
+  {
+    "Country": "Lesotho",
+    "Population 2026": "2.39 * 10^6",
+    "World Share": "2.90 * 10^-4",
+    "Land Area (Km²)": "3.04 * 10^4"
+  },
+  {
+    "Country": "Guinea-Bissau",
+    "Population 2026": "2.30 * 10^6",
+    "World Share": "2.80 * 10^-4",
+    "Land Area (Km²)": "2.81 * 10^4"
+  },
+  {
+    "Country": "Slovenia",
+    "Population 2026": "2.11 * 10^6",
+    "World Share": "2.50 * 10^-4",
+    "Land Area (Km²)": "2.01 * 10^4"
+  },
+  {
+    "Country": "Equatorial Guinea",
+    "Population 2026": "1.98 * 10^6",
+    "World Share": "2.40 * 10^-4",
+    "Land Area (Km²)": "2.81 * 10^4"
+  },
+  {
+    "Country": "Latvia",
+    "Population 2026": "1.84 * 10^6",
+    "World Share": "2.20 * 10^-4",
+    "Land Area (Km²)": "6.22 * 10^4"
+  },
+  {
+    "Country": "North Macedonia",
+    "Population 2026": "1.80 * 10^6",
+    "World Share": "2.20 * 10^-4",
+    "Land Area (Km²)": "2.52 * 10^4"
+  },
+  {
+    "Country": "Bahrain",
+    "Population 2026": "1.68 * 10^6",
+    "World Share": "2.00 * 10^-4",
+    "Land Area (Km²)": "7.60 * 10^2"
+  },
+  {
+    "Country": "Trinidad and Tobago",
+    "Population 2026": "1.51 * 10^6",
+    "World Share": "1.80 * 10^-4",
+    "Land Area (Km²)": "5.13 * 10^3"
+  },
+  {
+    "Country": "Timor-Leste",
+    "Population 2026": "1.44 * 10^6",
+    "World Share": "1.70 * 10^-4",
+    "Land Area (Km²)": "1.49 * 10^4"
+  },
+  {
+    "Country": "Cyprus",
+    "Population 2026": "1.38 * 10^6",
+    "World Share": "1.70 * 10^-4",
+    "Land Area (Km²)": "9.24 * 10^3"
+  },
+  {
+    "Country": "Estonia",
+    "Population 2026": "1.33 * 10^6",
+    "World Share": "1.60 * 10^-4",
+    "Land Area (Km²)": "4.24 * 10^4"
+  },
+  {
+    "Country": "Eswatini",
+    "Population 2026": "1.27 * 10^6",
+    "World Share": "1.50 * 10^-4",
+    "Land Area (Km²)": "1.72 * 10^4"
+  },
+  {
+    "Country": "Mauritius",
+    "Population 2026": "1.27 * 10^6",
+    "World Share": "1.50 * 10^-4",
+    "Land Area (Km²)": "2.03 * 10^3"
+  },
+  {
+    "Country": "Djibouti",
+    "Population 2026": "1.20 * 10^6",
+    "World Share": "1.40 * 10^-4",
+    "Land Area (Km²)": "2.32 * 10^4"
+  },
+  {
+    "Country": "Fiji",
+    "Population 2026": "9.37 * 10^5",
+    "World Share": "1.10 * 10^-4",
+    "Land Area (Km²)": "1.83 * 10^4"
+  },
+  {
+    "Country": "Comoros",
+    "Population 2026": "8.99 * 10^5",
+    "World Share": "1.10 * 10^-4",
+    "Land Area (Km²)": "1.86 * 10^3"
+  },
+  {
+    "Country": "Solomon Islands",
+    "Population 2026": "8.58 * 10^5",
+    "World Share": "1.00 * 10^-4",
+    "Land Area (Km²)": "2.80 * 10^4"
+  },
+  {
+    "Country": "Guyana",
+    "Population 2026": "8.41 * 10^5",
+    "World Share": "1.00 * 10^-4",
+    "Land Area (Km²)": "1.97 * 10^5"
+  },
+  {
+    "Country": "Bhutan",
+    "Population 2026": "8.02 * 10^5",
+    "World Share": "9.70 * 10^-5",
+    "Land Area (Km²)": "3.81 * 10^4"
+  },
+  {
+    "Country": "Luxembourg",
+    "Population 2026": "6.87 * 10^5",
+    "World Share": "8.30 * 10^-5",
+    "Land Area (Km²)": "2.59 * 10^3"
+  },
+  {
+    "Country": "Suriname",
+    "Population 2026": "6.45 * 10^5",
+    "World Share": "7.80 * 10^-5",
+    "Land Area (Km²)": "1.56 * 10^5"
+  },
+  {
+    "Country": "Montenegro",
+    "Population 2026": "6.26 * 10^5",
+    "World Share": "7.50 * 10^-5",
+    "Land Area (Km²)": "1.35 * 10^4"
+  },
+  {
+    "Country": "Malta",
+    "Population 2026": "5.49 * 10^5",
+    "World Share": "6.60 * 10^-5",
+    "Land Area (Km²)": "3.20 * 10^2"
+  },
+  {
+    "Country": "Maldives",
+    "Population 2026": "5.32 * 10^5",
+    "World Share": "6.40 * 10^-5",
+    "Land Area (Km²)": "3.00 * 10^2"
+  },
+  {
+    "Country": "Cabo Verde",
+    "Population 2026": "5.30 * 10^5",
+    "World Share": "6.40 * 10^-5",
+    "Land Area (Km²)": "4.03 * 10^3"
+  },
+  {
+    "Country": "Brunei",
+    "Population 2026": "4.70 * 10^5",
+    "World Share": "5.70 * 10^-5",
+    "Land Area (Km²)": "5.27 * 10^3"
+  },
+  {
+    "Country": "Belize",
+    "Population 2026": "4.29 * 10^5",
+    "World Share": "5.20 * 10^-5",
+    "Land Area (Km²)": "2.28 * 10^4"
+  },
+  {
+    "Country": "Bahamas",
+    "Population 2026": "4.05 * 10^5",
+    "World Share": "4.90 * 10^-5",
+    "Land Area (Km²)": "1.00 * 10^4"
+  },
+  {
+    "Country": "Iceland",
+    "Population 2026": "4.02 * 10^5",
+    "World Share": "4.80 * 10^-5",
+    "Land Area (Km²)": "1.00 * 10^5"
+  },
+  {
+    "Country": "Vanuatu",
+    "Population 2026": "3.43 * 10^5",
+    "World Share": "4.10 * 10^-5",
+    "Land Area (Km²)": "1.22 * 10^4"
+  },
+  {
+    "Country": "Barbados",
+    "Population 2026": "2.83 * 10^5",
+    "World Share": "3.40 * 10^-5",
+    "Land Area (Km²)": "4.30 * 10^2"
+  },
+  {
+    "Country": "Sao Tome & Principe",
+    "Population 2026": "2.45 * 10^5",
+    "World Share": "3.00 * 10^-5",
+    "Land Area (Km²)": "9.60 * 10^2"
+  },
+  {
+    "Country": "Samoa",
+    "Population 2026": "2.21 * 10^5",
+    "World Share": "2.70 * 10^-5",
+    "Land Area (Km²)": "2.83 * 10^3"
+  },
+  {
+    "Country": "Saint Lucia",
+    "Population 2026": "1.80 * 10^5",
+    "World Share": "2.20 * 10^-5",
+    "Land Area (Km²)": "6.10 * 10^2"
+  },
+  {
+    "Country": "Kiribati",
+    "Population 2026": "1.38 * 10^5",
+    "World Share": "1.70 * 10^-5",
+    "Land Area (Km²)": "8.10 * 10^2"
+  },
+  {
+    "Country": "Seychelles",
+    "Population 2026": "1.35 * 10^5",
+    "World Share": "1.60 * 10^-5",
+    "Land Area (Km²)": "4.60 * 10^2"
+  },
+  {
+    "Country": "Grenada",
+    "Population 2026": "1.17 * 10^5",
+    "World Share": "1.40 * 10^-5",
+    "Land Area (Km²)": "3.40 * 10^2"
+  },
+  {
+    "Country": "Micronesia",
+    "Population 2026": "1.14 * 10^5",
+    "World Share": "1.40 * 10^-5",
+    "Land Area (Km²)": "7.00 * 10^2"
+  },
+  {
+    "Country": "Tonga",
+    "Population 2026": "1.03 * 10^5",
+    "World Share": "1.20 * 10^-5",
+    "Land Area (Km²)": "7.20 * 10^2"
+  },
+  {
+    "Country": "St. Vincent & Grenadines",
+    "Population 2026": "9.92 * 10^4",
+    "World Share": "1.20 * 10^-5",
+    "Land Area (Km²)": "3.90 * 10^2"
+  },
+  {
+    "Country": "Antigua and Barbuda",
+    "Population 2026": "9.46 * 10^4",
+    "World Share": "1.10 * 10^-5",
+    "Land Area (Km²)": "4.40 * 10^2"
+  },
+  {
+    "Country": "Andorra",
+    "Population 2026": "8.38 * 10^4",
+    "World Share": "1.00 * 10^-5",
+    "Land Area (Km²)": "4.70 * 10^2"
+  },
+  {
+    "Country": "Dominica",
+    "Population 2026": "6.55 * 10^4",
+    "World Share": "7.90 * 10^-6",
+    "Land Area (Km²)": "7.50 * 10^2"
+  },
+  {
+    "Country": "Saint Kitts & Nevis",
+    "Population 2026": "4.70 * 10^4",
+    "World Share": "5.70 * 10^-6",
+    "Land Area (Km²)": "2.60 * 10^2"
+  },
+  {
+    "Country": "Liechtenstein",
+    "Population 2026": "4.04 * 10^4",
+    "World Share": "4.90 * 10^-6",
+    "Land Area (Km²)": "1.60 * 10^2"
+  },
+  {
+    "Country": "Monaco",
+    "Population 2026": "3.81 * 10^4",
+    "World Share": "4.60 * 10^-6",
+    "Land Area (Km²)": "1.00 * 10^0"
+  },
+  {
+    "Country": "Marshall Islands",
+    "Population 2026": "3.51 * 10^4",
+    "World Share": "4.20 * 10^-6",
+    "Land Area (Km²)": "1.80 * 10^2"
+  },
+  {
+    "Country": "San Marino",
+    "Population 2026": "3.36 * 10^4",
+    "World Share": "4.00 * 10^-6",
+    "Land Area (Km²)": "6.00 * 10^1"
+  },
+  {
+    "Country": "Palau",
+    "Population 2026": "1.76 * 10^4",
+    "World Share": "2.10 * 10^-6",
+    "Land Area (Km²)": "4.60 * 10^2"
+  },
+  {
+    "Country": "Nauru",
+    "Population 2026": "1.21 * 10^4",
+    "World Share": "1.50 * 10^-6",
+    "Land Area (Km²)": "2.00 * 10^1"
+  },
+  {
+    "Country": "Tuvalu",
+    "Population 2026": "9.36 * 10^3",
+    "World Share": "1.10 * 10^-6",
+    "Land Area (Km²)": "3.00 * 10^1"
+  },
+  {
+    "Country": "Holy See",
+    "Population 2026": "5.06 * 10^2",
+    "World Share": "6.10 * 10^-8",
+    "Land Area (Km²)": "0.00 * 10^0"
+  }
+]
